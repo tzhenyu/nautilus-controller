@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nautilus Controller</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Fullscreen Toggle Button -->
+    <button id="fullscreenBtn" class="btn btn-secondary position-fixed" style="top: 10px; right: 10px; z-index: 1050;">
+        <i class="fas fa-expand"></i>
+    </button>
+
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <!-- Control Panel -->
+            <div class="col-md-8 p-3">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fas fa-gamepad"></i> Nautilus Controller</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Camera Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0"><i class="fas fa-camera"></i> Camera Feed</h5>
+                                        <button id="cameraToggle" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-power-off"></i> Toggle Camera
+                                        </button>
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <div id="cameraContainer">
+                                            <div id="cameraPlaceholder" class="camera-placeholder">
+                                                <i class="fas fa-camera-slash fa-3x text-muted"></i>
+                                                <p class="text-muted mt-2">Camera is OFF</p>
+                                            </div>
+                                            <div id="cameraFeed" class="camera-feed" style="display: none;">
+                                                <div class="camera-active">
+                                                    <i class="fas fa-video fa-3x text-success"></i>
+                                                    <p class="text-success mt-2">Camera is ON</p>
+                                                    <small class="text-muted">Live feed would appear here</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Movement Controls -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="fas fa-arrows-alt"></i> Movement Controls</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="movement-controls">
+                                            <div class="row justify-content-center mb-3">
+                                                <div class="col-auto">
+                                                    <button id="forwardBtn" class="btn btn-primary btn-lg control-btn" data-direction="forward">
+                                                        <i class="fas fa-arrow-up"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center mb-3">
+                                                <div class="col-auto">
+                                                    <button id="leftBtn" class="btn btn-primary btn-lg control-btn me-3" data-direction="left">
+                                                        <i class="fas fa-arrow-left"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <button id="stopBtn" class="btn btn-danger btn-lg control-btn me-3">
+                                                        <i class="fas fa-stop"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <button id="rightBtn" class="btn btn-primary btn-lg control-btn" data-direction="right">
+                                                        <i class="fas fa-arrow-right"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <div class="col-auto">
+                                                    <button id="backwardBtn" class="btn btn-primary btn-lg control-btn" data-direction="backward">
+                                                        <i class="fas fa-arrow-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Speed and Servo Controls -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="fas fa-tachometer-alt"></i> Motor Speed</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="speedSlider" class="form-label">Speed: <span id="speedValue">50</span>%</label>
+                                            <input type="range" class="form-range" min="0" max="100" value="50" id="speedSlider">
+                                        </div>
+                                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                            <button class="btn btn-outline-secondary btn-sm" onclick="setSpeed(25)">25%</button>
+                                            <button class="btn btn-outline-secondary btn-sm" onclick="setSpeed(50)">50%</button>
+                                            <button class="btn btn-outline-secondary btn-sm" onclick="setSpeed(75)">75%</button>
+                                            <button class="btn btn-outline-secondary btn-sm" onclick="setSpeed(100)">100%</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="fas fa-cog"></i> Servo Control</h5>
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <p>Current Angle: <span id="servoAngle" class="badge bg-info">0°</span></p>
+                                        <button id="servoToggle" class="btn btn-success btn-lg">
+                                            <i class="fas fa-sync-alt"></i> Toggle Servo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Information Panel -->
+            <div class="col-md-4 p-3">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0"><i class="fas fa-info-circle"></i> Robot Status</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Real-time Coordinates -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-map-marker-alt"></i> Position</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong>X:</strong> <span id="posX" class="text-primary">0.0</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Y:</strong> <span id="posY" class="text-primary">0.0</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <strong>Heading:</strong> <span id="heading" class="text-primary">0°</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Status -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-cogs"></i> System Status</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-2">
+                                    <strong>Current Speed:</strong> <span id="currentSpeed" class="badge bg-primary">50%</span>
+                                </div>
+                                <div class="mb-2">
+                                    <strong>Direction:</strong> <span id="currentDirection" class="badge bg-secondary">stopped</span>
+                                </div>
+                                <div class="mb-2">
+                                    <strong>Camera:</strong> <span id="cameraStatus" class="badge bg-danger">OFF</span>
+                                </div>
+                                <div class="mb-2">
+                                    <strong>Servo:</strong> <span id="servoStatus" class="badge bg-info">0°</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Info -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-battery-three-quarters"></i> System Info</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-2">
+                                    <strong>Battery:</strong> <span id="battery" class="badge bg-success">100%</span>
+                                </div>
+                                <div class="mb-2">
+                                    <strong>Temperature:</strong> <span id="temperature" class="badge bg-warning">25.0°C</span>
+                                </div>
+                                <div class="mb-2">
+                                    <strong>Last Update:</strong>
+                                    <small id="lastUpdate" class="text-muted">Never</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Connection Status -->
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div id="connectionStatus" class="connection-status connected">
+                                    <i class="fas fa-wifi"></i> Connected
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>
