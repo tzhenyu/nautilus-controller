@@ -6,12 +6,17 @@ import asyncio
 import json
 from datetime import datetime
 import random
+from gpiozero import AngularServo
+from time import sleep
 
 app = FastAPI()
 
 # Mount static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+# Initialize the servo on GPIO pin 14
+servo = AngularServo(14, min_angle=0, max_angle=180, min_pulse_width=0.5/1000, max_pulse_width=2.5/1000)
 
 # Global state for robot control
 robot_state = {
@@ -24,6 +29,11 @@ robot_state = {
     "is_moving": False,
     "current_direction": "stopped"
 }
+
+# Function to set the servo angle
+def set_servo_angle(angle):
+    servo.angle = angle
+    sleep(0.05)
 
 @app.get("/")
 async def root(request: Request):
@@ -62,8 +72,13 @@ async def stop_robot():
 
 @app.post("/api/servo/toggle")
 async def toggle_servo():
-    # Toggle between 0 and 90 degrees as per servo-controller.py
-    robot_state["servo_angle"] = 90 if robot_state["servo_angle"] == 0 else 0
+    # Toggle between 0 and 90 degrees
+    new_angle = 180 if robot_state["servo_angle"] == 0 else 0
+    robot_state["servo_angle"] = new_angle
+    
+    # Actually control the physical servo
+    set_servo_angle(new_angle)
+    
     return JSONResponse({
         "status": "success", 
         "servo_angle": robot_state["servo_angle"],
@@ -97,4 +112,9 @@ async def get_status():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    try:
+        uvicorn.run(app, host="0.0.0.0", port=8000)
+    finally:
+        # Reset servo position when exiting
+        servo.angle = 0
+        print("Servo reset to 0 degrees")
