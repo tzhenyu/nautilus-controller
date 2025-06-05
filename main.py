@@ -6,12 +6,18 @@ import asyncio
 import json
 from datetime import datetime
 import random
+# Import the servo control modules
+from gpiozero import AngularServo
+from time import sleep
 
 app = FastAPI()
 
 # Mount static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+# Initialize the servo on GPIO pin 14
+servo = AngularServo(14, min_angle=0, max_angle=180, min_pulse_width=0.5/1000, max_pulse_width=2.5/1000)
 
 # Global state for robot control
 robot_state = {
@@ -64,6 +70,11 @@ async def stop_robot():
 async def toggle_servo():
     # Toggle between 0 and 90 degrees as per servo-controller.py
     robot_state["servo_angle"] = 90 if robot_state["servo_angle"] == 0 else 0
+    
+    # Set the actual servo position
+    servo.angle = robot_state["servo_angle"]
+    await asyncio.sleep(0.05)  # Small delay for servo movement
+    
     return JSONResponse({
         "status": "success", 
         "servo_angle": robot_state["servo_angle"],
