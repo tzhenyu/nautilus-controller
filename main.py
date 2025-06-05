@@ -72,7 +72,7 @@ async def stop_robot():
 
 @app.post("/api/servo/toggle")
 async def toggle_servo():
-    # Toggle between 0 and 90 degrees
+    # Toggle between 0 and 180 degrees
     new_angle = 180 if robot_state["servo_angle"] == 0 else 0
     robot_state["servo_angle"] = new_angle
     
