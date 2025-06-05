@@ -4,6 +4,7 @@ I'd like to have a server that can control the component via Raspberry Pi.
 
 ## Requirement
 - UI friendly for mobile platform
+- Horizontal webpage with toggleable full screen
 - Button for forward, backward, left, right
 - Button for toggleable camera
 - Button for toggleable servo change (refer to servo-controller.py)
