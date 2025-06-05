@@ -1,0 +1,219 @@
+/* Custom CSS for Nautilus Controller */
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+}
+
+/* Fullscreen styles */
+.fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+    background-color: #fff !important;
+    overflow: auto !important;
+}
+
+/* Camera styles */
+.camera-placeholder, .camera-feed {
+    min-height: 200px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa;
+}
+
+.camera-active {
+    padding: 20px;
+}
+
+/* Movement controls */
+.movement-controls {
+    padding: 20px;
+}
+
+.control-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-size: 24px;
+    margin: 5px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.control-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.control-btn.active {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+}
+
+/* Speed slider */
+.form-range {
+    height: 8px;
+}
+
+.form-range::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+    background-color: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Connection status */
+.connection-status {
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.connection-status.connected {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.connection-status.disconnected {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.5; }
+}
+
+/* Badge animations */
+.badge {
+    transition: transform 0.2s ease;
+}
+
+.badge.updated {
+    transform: scale(1.1);
+    animation: highlight 0.5s ease;
+}
+
+@keyframes highlight {
+    0% { background-color: #ffc107; }
+    100% { background-color: var(--bs-primary); }
+}
+
+/* Card hover effects */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .control-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 18px;
+    }
+    
+    .movement-controls {
+        padding: 10px;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    h4 {
+        font-size: 1.1rem;
+    }
+    
+    h5 {
+        font-size: 1rem;
+    }
+}
+
+/* Landscape mode optimizations */
+@media (orientation: landscape) and (max-height: 600px) {
+    .card-header {
+        padding: 0.5rem 1rem;
+    }
+    
+    .card-body {
+        padding: 0.75rem;
+    }
+    
+    .control-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 18px;
+    }
+    
+    .camera-placeholder, .camera-feed {
+        min-height: 120px;
+    }
+}
+
+/* Touch improvements */
+@media (hover: none) and (pointer: coarse) {
+    .control-btn {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .btn {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+}
+
+/* Utility classes */
+.text-glow {
+    text-shadow: 0 0 10px rgba(255,255,255,0.8);
+}
+
+.border-glow {
+    box-shadow: 0 0 15px rgba(0,123,255,0.5);
+}
+
+/* Loading spinner */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
