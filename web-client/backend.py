@@ -6,10 +6,35 @@ import asyncio
 import json
 from datetime import datetime
 import random
-from gpiozero import AngularServo
+import platform
 from time import sleep
-import gps3
 import threading
+
+# Mock servo class for development on non-Raspberry Pi systems
+class MockServo:
+    def __init__(self, pin, min_angle=0, max_angle=180, min_pulse_width=0.5/1000, max_pulse_width=2.5/1000):
+        self.pin = pin
+        self.min_angle = min_angle
+        self.max_angle = max_angle
+        self._angle = 0
+        print(f"Mock servo initialized on pin {pin}")
+    
+    @property
+    def angle(self):
+        return self._angle
+    
+    @angle.setter
+    def angle(self, value):
+        self._angle = max(self.min_angle, min(self.max_angle, value))
+        print(f"Mock servo angle set to {self._angle} degrees")
+
+# Mock GPS module for development
+class MockGPS:
+    def __init__(self):
+        self.latitude = 40.7128
+        self.longitude = -74.0060
+        self.altitude = 10.0
+        print("Mock GPS initialized")
 
 app = FastAPI()
 
@@ -17,8 +42,35 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="."), name="static")
 templates = Jinja2Templates(directory="static")
 
-# Initialize the servo on GPIO pin 17
-servo = AngularServo(17, min_angle=0, max_angle=180, min_pulse_width=0.5/1000, max_pulse_width=2.5/1000)
+# Initialize hardware based on platform
+try:
+    # Try to import and use real GPIO on Raspberry Pi
+    if platform.machine() in ('armv6l', 'armv7l', 'aarch64'):
+        from gpiozero import AngularServo
+        servo = AngularServo(17, min_angle=0, max_angle=180, min_pulse_width=0.5/1000, max_pulse_width=2.5/1000)
+        print("Real GPIO servo initialized")
+        use_real_hardware = True
+    else:
+        raise ImportError("Not on Raspberry Pi")
+except (ImportError, Exception) as e:
+    # Use mock hardware for development
+    servo = MockServo(17, min_angle=0, max_angle=180, min_pulse_width=0.5/1000, max_pulse_width=2.5/1000)
+    use_real_hardware = False
+    print(f"Using mock hardware for development: {e}")
+
+# Initialize GPS
+try:
+    if use_real_hardware:
+        import gps3
+        gps_socket = gps3.GPSDSocket()
+        data_stream = gps3.DataStream()
+        print("Real GPS initialized")
+    else:
+        raise ImportError("Using mock GPS")
+except (ImportError, Exception) as e:
+    gps_socket = None
+    data_stream = MockGPS()
+    print(f"Using mock GPS for development: {e}")
 
 # Global state for robot control
 robot_state = {
@@ -34,8 +86,6 @@ robot_state = {
 }
 
 # GPS data collection variables
-gps_socket = None
-data_stream = None
 gps_thread = None
 gps_running = False
 
@@ -49,35 +99,43 @@ def collect_gps_data():
     global gps_socket, data_stream, gps_running
     
     try:
-        gps_socket = gps3.GPSDSocket()
-        data_stream = gps3.DataStream()
-        gps_socket.connect()
-        gps_socket.watch()
-        robot_state["gps_status"] = "connected"
-        
-        while gps_running:
-            for new_data in gps_socket:
-                if not gps_running:
-                    break
-                    
-                if new_data:
-                    data_stream.unpack(new_data)
-                    lat = data_stream.TPV['lat']
-                    lon = data_stream.TPV['lon']
-                    
-                    if lat != 'n/a' and lon != 'n/a':
-                        robot_state["latitude"] = float(lat)
-                        robot_state["longitude"] = float(lon)
-                        robot_state["gps_status"] = "active"
-                    else:
-                        robot_state["gps_status"] = "no_fix"
+        if use_real_hardware:
+            gps_socket.connect()
+            gps_socket.watch()
+            robot_state["gps_status"] = "connected"
+            
+            while gps_running:
+                for new_data in gps_socket:
+                    if not gps_running:
+                        break
                         
-                    sleep(0.5)  # Update rate
+                    if new_data:
+                        data_stream.unpack(new_data)
+                        lat = data_stream.TPV['lat']
+                        lon = data_stream.TPV['lon']
+                        
+                        if lat != 'n/a' and lon != 'n/a':
+                            robot_state["latitude"] = float(lat)
+                            robot_state["longitude"] = float(lon)
+                            robot_state["gps_status"] = "active"
+                        else:
+                            robot_state["gps_status"] = "no_fix"
+                            
+                        sleep(0.5)  # Update rate
+        else:
+            # Mock GPS data for development
+            robot_state["gps_status"] = "connected (mock)"
+            while gps_running:
+                # Simulate slight GPS movement for testing
+                robot_state["latitude"] = data_stream.latitude + random.uniform(-0.0001, 0.0001)
+                robot_state["longitude"] = data_stream.longitude + random.uniform(-0.0001, 0.0001)
+                robot_state["gps_status"] = "active (mock)"
+                sleep(1.0)
                     
     except Exception as e:
         robot_state["gps_status"] = f"error: {str(e)}"
     finally:
-        if gps_socket:
+        if gps_socket and use_real_hardware:
             gps_socket.close()
         robot_state["gps_status"] = "disconnected"
 
@@ -89,6 +147,7 @@ def start_gps():
         gps_thread = threading.Thread(target=collect_gps_data)
         gps_thread.daemon = True
         gps_thread.start()
+        print("GPS data collection started")
 
 # Stop GPS data collection
 def stop_gps():
@@ -96,6 +155,7 @@ def stop_gps():
     gps_running = False
     if gps_thread is not None:
         gps_thread.join(timeout=2.0)
+    print("GPS data collection stopped")
 
 # Start GPS on application startup
 @app.on_event("startup")

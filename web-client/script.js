@@ -5,11 +5,16 @@ class NautilusController {
         this.isMoving = false;
         this.currentDirection = 'stopped';
         this.updateInterval = null;
+        this.map = null;
+        this.robotMarker = null;
+        this.currentLat = 40.7128; // Default to New York (mock location)
+        this.currentLon = -74.0060;
         this.init();
     }
 
     init() {
         this.setupEventListeners();
+        this.initializeMap();
         this.startStatusUpdates();
         this.updateUI();
     }
@@ -49,11 +54,60 @@ class NautilusController {
         document.getElementById('servoToggle').addEventListener('click', () => this.toggleServo());
 
         // Fullscreen toggle
-        document.getElementById('fullscreenBtn').addEventListener('click', () => this.toggleFullscreen());
-
-        // Keyboard controls
+        document.getElementById('fullscreenBtn').addEventListener('click', () => this.toggleFullscreen());        // Keyboard controls
         document.addEventListener('keydown', (e) => this.handleKeyDown(e));
         document.addEventListener('keyup', (e) => this.handleKeyUp(e));
+    }
+
+    initializeMap() {
+        // Initialize the Leaflet map
+        this.map = L.map('map').setView([this.currentLat, this.currentLon], 18);
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(this.map);
+
+        // Create a custom robot icon
+        const robotIcon = L.divIcon({
+            className: 'robot-marker',
+            html: '<i class="fas fa-ship text-primary" style="font-size: 20px;"></i>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+        });
+
+        // Add robot marker
+        this.robotMarker = L.marker([this.currentLat, this.currentLon], { 
+            icon: robotIcon 
+        }).addTo(this.map)
+            .bindPopup(`<b>Nautilus Robot</b><br>
+                        Lat: ${this.currentLat.toFixed(6)}<br>
+                        Lon: ${this.currentLon.toFixed(6)}<br>
+                        <small>Position updates in real-time</small>`)
+            .openPopup();
+
+        console.log('Map initialized at:', this.currentLat, this.currentLon);
+    }
+
+    updateMapPosition(lat, lon) {
+        if (this.map && this.robotMarker) {
+            // Update marker position
+            this.robotMarker.setLatLng([lat, lon]);
+            
+            // Update popup content
+            this.robotMarker.setPopupContent(`<b>Nautilus Robot</b><br>
+                                            Lat: ${lat.toFixed(6)}<br>
+                                            Lon: ${lon.toFixed(6)}<br>
+                                            <small>Position updates in real-time</small>`);
+            
+            // Center map on new position (smooth pan)
+            this.map.panTo([lat, lon]);
+            
+            // Store current position
+            this.currentLat = lat;
+            this.currentLon = lon;
+        }
     }
 
     async startMovement(direction) {
@@ -181,13 +235,35 @@ class NautilusController {
             console.error('Error updating status:', error);
             this.showConnectionError();
         }
-    }
-
-    updateStatusFromResponse(data) {
-        // Update position
-        document.getElementById('posX').textContent = data.state?.x?.toFixed(2) || data.x?.toFixed(2) || '0.0';
-        document.getElementById('posY').textContent = data.state?.y?.toFixed(2) || data.y?.toFixed(2) || '0.0';
+    }    updateStatusFromResponse(data) {
+        // Update position (X, Y coordinates from GPS latitude/longitude)
+        const lat = data.latitude || data.state?.latitude || this.currentLat;
+        const lon = data.longitude || data.state?.longitude || this.currentLon;
+        
+        document.getElementById('posX').textContent = lat.toFixed(6);
+        document.getElementById('posY').textContent = lon.toFixed(6);
         document.getElementById('heading').textContent = `${Math.round(data.state?.heading || data.heading || 0)}°`;
+
+        // Update GPS status
+        const gpsStatus = data.gps_status || data.state?.gps_status || 'unknown';
+        const gpsElement = document.getElementById('gpsStatus');
+        if (gpsElement) {
+            gpsElement.textContent = gpsStatus;
+            
+            // Update GPS status badge color based on status
+            let badgeClass = 'bg-secondary';
+            if (gpsStatus.includes('active')) badgeClass = 'bg-success';
+            else if (gpsStatus.includes('connected')) badgeClass = 'bg-info';
+            else if (gpsStatus.includes('error')) badgeClass = 'bg-danger';
+            else if (gpsStatus.includes('initializing')) badgeClass = 'bg-warning';
+            
+            gpsElement.className = `badge ${badgeClass}`;
+        }
+
+        // Update map position if coordinates have changed
+        if (this.map && (lat !== this.currentLat || lon !== this.currentLon)) {
+            this.updateMapPosition(lat, lon);
+        }
 
         // Update system status
         document.getElementById('currentSpeed').textContent = `${data.state?.motor_speed || data.motor_speed || 50}%`;
