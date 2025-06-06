@@ -184,9 +184,15 @@ class NautilusController {
     }
 
     updateStatusFromResponse(data) {
-        // Update position
-        document.getElementById('posX').textContent = data.state?.x?.toFixed(2) || data.x?.toFixed(2) || '0.0';
-        document.getElementById('posY').textContent = data.state?.y?.toFixed(2) || data.y?.toFixed(2) || '0.0';
+        // Update position - Check for latitude/longitude and posX/posY format
+        document.getElementById('posX').textContent = 
+            (data.state?.latitude || data.latitude || 
+             data.state?.posX || data.posX || 0).toFixed(6);
+        
+        document.getElementById('posY').textContent = 
+            (data.state?.longitude || data.longitude || 
+             data.state?.posY || data.posY || 0).toFixed(6);
+
         document.getElementById('heading').textContent = `${Math.round(data.state?.heading || data.heading || 0)}°`;
 
         // Update system status
