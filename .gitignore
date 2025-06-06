@@ -1,2 +1,3 @@
 /.venv
-/server.sh
+server.sh
+/__pycache__/*
