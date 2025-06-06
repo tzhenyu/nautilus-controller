@@ -1,3 +1,4 @@
 #!/bin/bash
 echo "Starting FastAPI robot control server..."
-sudo python3 main.py
+cd web-client
+sudo python3 backend.py

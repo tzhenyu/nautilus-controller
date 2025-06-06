@@ -9,17 +9,88 @@ class NautilusController {
         this.robotMarker = null;
         this.currentLat = 40.7128; // Default to New York (mock location)
         this.currentLon = -74.0060;
+        this.theme = localStorage.getItem('theme') || 'light';
         this.init();
     }
 
     init() {
         this.setupEventListeners();
+        this.initializeTheme();
         this.initializeMap();
         this.startStatusUpdates();
         this.updateUI();
     }
 
+    initializeTheme() {
+        // Apply saved theme
+        document.documentElement.setAttribute('data-theme', this.theme);
+        this.updateThemeIcon();
+    }
+
+    toggleTheme() {
+        this.theme = this.theme === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', this.theme);
+        localStorage.setItem('theme', this.theme);
+        this.updateThemeIcon();
+        
+        // Reinitialize map with new theme if it exists
+        if (this.map) {
+            this.updateMapTheme();
+        }
+    }
+
+    updateThemeIcon() {
+        const themeToggle = document.getElementById('themeToggle');
+        const icon = themeToggle.querySelector('i');
+        icon.className = this.theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        themeToggle.title = `Switch to ${this.theme === 'light' ? 'dark' : 'light'} mode`;
+    }
+
+    updateMapTheme() {
+        if (!this.map) return;
+        
+        // Remove existing tile layer
+        this.map.eachLayer((layer) => {
+            if (layer._url) {
+                this.map.removeLayer(layer);
+            }
+        });
+        
+        // Add new tile layer based on theme
+        const tileUrl = this.theme === 'dark' 
+            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+            : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            
+        L.tileLayer(tileUrl, {
+            attribution: this.theme === 'dark'
+                ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(this.map);
+        
+        // Re-add robot marker
+        if (this.robotMarker) {
+            this.robotMarker.addTo(this.map);
+        }
+    }
+
+    toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log(`Error attempting to enable fullscreen: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
     setupEventListeners() {
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+        
+        // Fullscreen toggle
+        document.getElementById('fullscreenBtn').addEventListener('click', () => this.toggleFullscreen());
+
         // Movement controls
         document.querySelectorAll('.control-btn[data-direction]').forEach(btn => {
             btn.addEventListener('mousedown', (e) => this.startMovement(e.target.dataset.direction));
@@ -48,33 +119,35 @@ class NautilusController {
         });
 
         // Camera toggle
-        document.getElementById('cameraToggle').addEventListener('click', () => this.toggleCamera());
-
-        // Servo toggle
+        document.getElementById('cameraToggle').addEventListener('click', () => this.toggleCamera());        // Servo toggle
         document.getElementById('servoToggle').addEventListener('click', () => this.toggleServo());
 
         // Fullscreen toggle
         document.getElementById('fullscreenBtn').addEventListener('click', () => this.toggleFullscreen());        // Keyboard controls
         document.addEventListener('keydown', (e) => this.handleKeyDown(e));
         document.addEventListener('keyup', (e) => this.handleKeyUp(e));
-    }
-
-    initializeMap() {
+    }    initializeMap() {
         // Initialize the Leaflet map
         this.map = L.map('map').setView([this.currentLat, this.currentLon], 18);
 
-        // Add OpenStreetMap tile layer
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        // Add tile layer based on current theme
+        const tileUrl = this.theme === 'dark' 
+            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+            : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            
+        L.tileLayer(tileUrl, {
+            attribution: this.theme === 'dark'
+                ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             maxZoom: 19
         }).addTo(this.map);
 
         // Create a custom robot icon
         const robotIcon = L.divIcon({
             className: 'robot-marker',
-            html: '<i class="fas fa-ship text-primary" style="font-size: 20px;"></i>',
-            iconSize: [30, 30],
-            iconAnchor: [15, 15]
+            html: '<div class="robot-icon"><i class="fas fa-ship"></i><div class="robot-pulse"></div></div>',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
         });
 
         // Add robot marker
@@ -199,9 +272,7 @@ class NautilusController {
             console.error('Error toggling camera:', error);
             this.showConnectionError();
         }
-    }
-
-    async toggleServo() {
+    }    async toggleServo() {
         try {
             const response = await fetch('/api/servo/toggle', {
                 method: 'POST',
@@ -212,7 +283,7 @@ class NautilusController {
 
             if (response.ok) {
                 const data = await response.json();
-                document.getElementById('servoAngle').textContent = `${data.servo_angle}°`;
+                this.updateServoUI(data.servo_angle);
                 this.updateStatusFromResponse(data);
                 this.highlightElement('servoStatus');
                 this.highlightElement('servoAngle');
@@ -220,6 +291,62 @@ class NautilusController {
         } catch (error) {
             console.error('Error toggling servo:', error);
             this.showConnectionError();
+        }
+    }
+
+    async setServoAngle(angle) {
+        try {
+            const response = await fetch('/api/servo/set', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ angle: angle })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                this.updateServoUI(data.servo_angle);
+                this.updateStatusFromResponse(data);
+                this.highlightElement('servoStatus');
+                this.highlightElement('servoAngle');
+            }
+        } catch (error) {
+            console.error('Error setting servo angle:', error);
+            this.showConnectionError();
+        }
+    }    updateServoUI(angle) {
+        // Update angle display
+        document.getElementById('servoAngle').textContent = `${angle}°`;
+        
+        // Update gauge
+        this.updateServoGauge(angle);
+    }
+
+    updateServoGauge(angle) {
+        const pointer = document.getElementById('servoGaugePointer');
+        const fill = document.getElementById('servoGaugeFill');
+        
+        if (pointer && fill) {
+            // Calculate rotation (0° = -90deg, 180° = 90deg)
+            const rotation = (angle - 90);
+            pointer.style.transform = `translate(-50%, -100%) rotate(${rotation}deg)`;
+            
+            // Update fill gradient
+            const fillPercentage = (angle / 180) * 180; // 0 to 180 degrees
+            fill.style.background = `conic-gradient(
+                from -90deg,
+                var(--primary-color) 0deg,
+                var(--primary-color) ${fillPercentage}deg,
+                transparent ${fillPercentage}deg,
+                transparent 180deg
+            )`;
+            
+            // Add update animation
+            fill.classList.add('updating');
+            setTimeout(() => {
+                fill.classList.remove('updating');
+            }, 500);
         }
     }
 
@@ -235,13 +362,18 @@ class NautilusController {
             console.error('Error updating status:', error);
             this.showConnectionError();
         }
-    }    updateStatusFromResponse(data) {
-        // Update position (X, Y coordinates from GPS latitude/longitude)
-        const lat = data.latitude || data.state?.latitude || this.currentLat;
-        const lon = data.longitude || data.state?.longitude || this.currentLon;
+    }
+
+    updateStatusFromResponse(data) {
+        // Update position - Check for latitude/longitude and posX/posY format
+        document.getElementById('posX').textContent = 
+            (data.state?.latitude || data.latitude || 
+             data.state?.posX || data.posX || 0).toFixed(6);
         
-        document.getElementById('posX').textContent = lat.toFixed(6);
-        document.getElementById('posY').textContent = lon.toFixed(6);
+        document.getElementById('posY').textContent = 
+            (data.state?.longitude || data.longitude || 
+             data.state?.posY || data.posY || 0).toFixed(6);
+
         document.getElementById('heading').textContent = `${Math.round(data.state?.heading || data.heading || 0)}°`;
 
         // Update GPS status
@@ -272,11 +404,10 @@ class NautilusController {
         // Update camera status
         const cameraEnabled = data.state?.camera_enabled || data.camera_enabled || false;
         document.getElementById('cameraStatus').textContent = cameraEnabled ? 'ON' : 'OFF';
-        document.getElementById('cameraStatus').className = `badge ${cameraEnabled ? 'bg-success' : 'bg-danger'}`;
-
-        // Update servo status
+        document.getElementById('cameraStatus').className = `badge ${cameraEnabled ? 'bg-success' : 'bg-danger'}`;        // Update servo status
         const servoAngle = data.state?.servo_angle || data.servo_angle || 0;
         document.getElementById('servoStatus').textContent = `${servoAngle}°`;
+        this.updateServoUI(servoAngle);
 
         // Update additional info
         if (data.battery) document.getElementById('battery').textContent = `${data.battery}%`;
@@ -373,18 +504,12 @@ class NautilusController {
     }
 
     toggleFullscreen() {
-        const container = document.querySelector('.container-fluid');
-        const btn = document.getElementById('fullscreenBtn');
-        const icon = btn.querySelector('i');
-        
-        if (container.classList.contains('fullscreen')) {
-            container.classList.remove('fullscreen');
-            icon.className = 'fas fa-expand';
-            btn.title = 'Enter Fullscreen';
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log(`Error attempting to enable fullscreen: ${err.message}`);
+            });
         } else {
-            container.classList.add('fullscreen');
-            icon.className = 'fas fa-compress';
-            btn.title = 'Exit Fullscreen';
+            document.exitFullscreen();
         }
     }
 
@@ -419,11 +544,11 @@ class NautilusController {
                 element.classList.remove('updated');
             }, 500);
         }
-    }
-
-    updateUI() {
+    }    updateUI() {
         // Initialize UI state
         this.updateStatus();
+        // Initialize servo gauge
+        this.updateServoGauge(0);
     }
 }
 
