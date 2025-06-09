@@ -118,8 +118,8 @@ def collect_gps_data():
                     print(f"[DEBUG] GPS thread: Position data - lat: {lat}, lon: {lon}")
                     
                     if lat != 'n/a' and lon != 'n/a':
-                        robot_state["posX"] = float(lat)
-                        robot_state["posY"] = float(lon)
+                        robot_state["posY"] = float(lat)
+                        robot_state["posX"] = float(lon)
                         robot_state["gps_status"] = "active"
                     else:
                         robot_state["gps_status"] = "no_fix"
@@ -219,6 +219,18 @@ async def toggle_servo():
         "status": "success", 
         "servo_angle": robot_state["servo_angle"],
         "state": robot_state
+    })
+
+@app.get("/api/coordinates")
+async def get_coordinates():
+    """
+    Returns the current GPS coordinates of the robot.
+    This endpoint provides just the raw latitude and longitude values.
+    """
+    return JSONResponse({
+        "posY": robot_state.get("posY", 0.0),  # Latitude
+        "posX": robot_state.get("posX", 0.0),  # Longitude
+        "success": robot_state.get("gps_status") == "active"
     })
 
 @app.post("/api/servo/set")

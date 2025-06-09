@@ -363,14 +363,12 @@ class NautilusController {
     }
 
     updateStatusFromResponse(data) {
-        // Update position - Check for latitude/longitude and posX/posY format
-        document.getElementById('posX').textContent = 
-            (data.state?.latitude || data.latitude || 
-             data.state?.posX || data.posX || 0).toFixed(6);
+        // Update position - Extract coordinates
+        const lat = data.state?.posY || data.posY || 0;
+        const lon = data.state?.posX || data.posX || 0;
         
-        document.getElementById('posY').textContent = 
-            (data.state?.longitude || data.longitude || 
-             data.state?.posY || data.posY || 0).toFixed(6);
+        document.getElementById('posX').textContent = lon.toFixed(6);
+        document.getElementById('posY').textContent = lat.toFixed(6);
 
         document.getElementById('heading').textContent = `${Math.round(data.state?.heading || data.heading || 0)}°`;
 
