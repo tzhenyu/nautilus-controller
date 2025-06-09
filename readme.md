@@ -81,9 +81,14 @@ pip install -r requirements.txt
 
 ## Running the Application
 
-1. Start the FastAPI server:
+1. Start the FastAPI server (Linux/Ubuntu):
 ```bash
 sudo python3 main.py
+```
+or (Windows)
+
+```
+cd web-client; python -m uvicorn backend:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 2. Open your web browser and navigate to:

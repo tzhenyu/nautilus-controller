@@ -9,10 +9,9 @@
     <link href="/static/style.css" rel="stylesheet">
 </head>
 <body class="d-flex flex-column min-vh-100">    <!-- Header with Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="fas fa-ship me-2"></i>Nautilus Controller
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">        <div class="container-fluid">
+            <a class="navbar-brand fw-bold ms-3" href="#">
+                <img src="/images/nautilus2.png" alt="Nautilus" class="nautilus-logo me-2">Nautilus Controller
             </a>
             <div class="d-flex align-items-center">
                 <!-- Theme Toggle -->
@@ -111,14 +110,13 @@
                         </div>                        <!-- Speed and Servo Controls -->
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <div class="card border-0 shadow-sm">
+                                <div class="card border-0 shadow-sm h-100">
                                     <div class="card-header bg-light border-0">
                                         <h6 class="mb-0 fw-semibold">
                                             <i class="fas fa-tachometer-alt text-primary me-2"></i>Speed Control
                                         </h6>
-                                    </div>
-                                    <div class="card-body p-4">
-                                        <div class="mb-3">
+                                    </div>                                    <div class="card-body p-3 d-flex flex-column">
+                                        <div class="mb-1">
                                             <label for="speedSlider" class="form-label d-flex justify-content-between">
                                                 <span>Speed Control</span>
                                                 <span class="badge bg-primary rounded-pill">
@@ -127,7 +125,7 @@
                                             </label>
                                             <input type="range" class="form-range speed-slider" min="0" max="100" value="50" id="speedSlider">
                                         </div>
-                                        <div class="d-grid gap-2">
+                                        <div class="d-grid gap-2 mt-auto">
                                             <div class="btn-group" role="group">
                                                 <button class="btn btn-outline-secondary btn-sm" onclick="setSpeed(25)">25%</button>
                                                 <button class="btn btn-outline-secondary btn-sm" onclick="setSpeed(50)">50%</button>
@@ -137,16 +135,17 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>                            <div class="col-md-6">
-                                <div class="card border-0 shadow-sm">
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card border-0 shadow-sm h-100">
                                     <div class="card-header bg-light border-0">
                                         <h6 class="mb-0 fw-semibold">
                                             <i class="fas fa-cog text-primary me-2"></i>Servo Control
                                         </h6>
-                                    </div>
-                                    <div class="card-body p-4">
+                                    </div>                                    <div class="card-body p-3 d-flex flex-column">
                                         <!-- Servo Angle Gauge -->
-                                        <div class="mb-4 text-center">
+                                        <div class="mb-1 text-center flex-grow-1 d-flex align-items-center justify-content-center">
                                             <div class="servo-gauge-container">
                                                 <div class="servo-gauge">
                                                     <div class="servo-gauge-background"></div>
@@ -158,8 +157,10 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div><!-- Toggle Button (Legacy) -->
-                                        <button id="servoToggle" class="btn btn-success btn-lg rounded-pill shadow-sm w-100">
+                                        </div>
+
+                                        <!-- Toggle Button (Legacy) -->
+                                        <button id="servoToggle" class="btn btn-success btn-lg rounded-pill shadow-sm w-100 mt-auto">
                                             <i class="fas fa-sync-alt me-2"></i>Toggle 0°/180°
                                         </button>
                                     </div>
@@ -172,10 +173,15 @@
             <div class="col-lg-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-header bg-gradient-success text-white border-0">
-                        <h5 class="mb-0 fw-bold">
-                            <i class="fas fa-chart-line me-2"></i>Robot Status
-                        </h5>
-                    </div>                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="fas fa-chart-line me-2"></i>Robot Status
+                            </h5>
+                            <div class="status-indicator">
+                                <i class="fas fa-robot me-1"></i>Active
+                            </div>
+                        </div>
+                    </div><div class="card-body p-3">
                         <!-- Real-time Coordinates -->
                         <div class="card mb-3 border-0 shadow-sm">
                             <div class="card-header bg-light border-0">

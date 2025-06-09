@@ -140,12 +140,10 @@ class NautilusController {
                 ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                 : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             maxZoom: 19
-        }).addTo(this.map);
-
-        // Create a custom robot icon
+        }).addTo(this.map);        // Create a custom robot icon
         const robotIcon = L.divIcon({
             className: 'robot-marker',
-            html: '<div class="robot-icon"><i class="fas fa-ship"></i><div class="robot-pulse"></div></div>',
+            html: '<div class="robot-icon"><img src="/images/nautilus2.png" alt="Nautilus" class="robot-image"><div class="robot-pulse"></div></div>',
             iconSize: [40, 40],
             iconAnchor: [20, 20]
         });
