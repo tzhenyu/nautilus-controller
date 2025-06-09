@@ -117,6 +117,20 @@ body {
     color: white !important;
 }
 
+/* Force light grey background for camera and movement control headers */
+.card-header.bg-light {
+    background-color: #f8f9fa !important; /* Light grey */
+    color: #212529 !important; /* Dark text for contrast */
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+/* Dark mode styling for light grey headers */
+[data-theme="dark"] .card-header.bg-light {
+    background-color: #27272a !important; /* Dark theme light grey */
+    color: #ffffff !important; /* Light text for dark mode */
+    border-bottom: 1px solid #3f3f46 !important;
+}
+
 /* Navigation */
 .navbar {
     box-shadow: var(--shadow);
@@ -135,11 +149,11 @@ body {
 .nautilus-logo {
     height: 32px;
     width: auto;
-    transition: transform 0.2s ease, filter 0.3s ease;
+    transition: filter 0.3s ease;
 }
 
 .nautilus-logo:hover {
-    transform: scale(1.05);
+    /* Removed scaling effect */
 }
 
 /* Dark mode filter for logo */
@@ -149,53 +163,443 @@ body {
 
 /* Theme Toggle Button */
 #themeToggle {
-    transition: transform 0.2s ease;
+    transition: opacity 0.2s ease;
 }
 
 #themeToggle:hover {
-    transform: scale(1.1);
+    opacity: 0.8;
 }
 
-/* Camera Styles */
-.camera-container {
+/* Enhanced Camera Styles */
+.camera-card {
+    background: linear-gradient(135deg, var(--surface-color), var(--light-color));
+    overflow: hidden;
+}
+
+/* Camera header text - now consistent with other card headers */
+.camera-header-text {
+    color: #212529 !important; /* Force same dark color as Movement Controls in light mode */
+    transition: color 0.3s ease;
+}
+
+/* Dark mode camera header text */
+[data-theme="dark"] .camera-header-text {
+    color: #ffffff !important; /* Light text for dark mode */
+}
+
+/* Theme-adaptive camera text elements */
+.camera-text {
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.camera-text-muted {
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+/* Ensure proper contrast in different states */
+[data-theme="light"] .camera-text {
+    color: var(--dark-color);
+}
+
+[data-theme="light"] .camera-text-muted {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .camera-text {
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .camera-text-muted {
+    color: var(--text-muted);
+}
+
+.camera-controls {
+    position: relative;
+    z-index: 2;
+}
+
+.camera-btn {
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.camera-btn:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Zoom In Camera Button - Always visible when camera is active */
+.fullscreen-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(102, 126, 234, 0.8);
+    color: #667eea;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     position: relative;
     overflow: hidden;
-    border-radius: 0.5rem;
 }
 
-.camera-placeholder, 
-.camera-feed {
-    min-height: 200px;
-    border: 2px dashed var(--border-color);
-    border-radius: 0.5rem;
+.fullscreen-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.fullscreen-btn:hover::before {
+    left: 100%;
+}
+
+.fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: #667eea;
+    color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.fullscreen-btn:focus {
+    background: rgba(255, 255, 255, 1);
+    border-color: #667eea;
+    color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.fullscreen-btn:active {
+    opacity: 0.8;
+}
+
+.camera-container-enhanced {
+    position: relative;
+    min-height: 300px;
+    background: var(--surface-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Camera Placeholder Enhanced */
+.camera-placeholder-enhanced {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--light-color), var(--surface-color));
+    position: relative;
+    overflow: hidden;
+}
+
+.camera-placeholder-enhanced::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+    animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.camera-status-enhanced {
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.camera-icon-wrapper {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.camera-icon {
+    color: var(--primary-color);
+    filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3));
+    animation: cameraFloat 3s ease-in-out infinite;
+}
+
+@keyframes cameraFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.camera-features {
+    margin-top: 2rem;
     display: flex;
     flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.feature-item:hover {
+    opacity: 1;
+}
+
+/* Camera Feed Enhanced */
+.camera-feed-enhanced {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    background: #000;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    align-items: center;    background: var(--light-color);
-    transition: all 0.3s ease;
 }
 
-/* Dark mode enhanced camera styles */
-[data-theme="dark"] .camera-placeholder,
-[data-theme="dark"] .camera-feed {
-    background: var(--inner-surface-color);
-    border-color: var(--inner-border-color);
-    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+.camera-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none;
 }
 
-.camera-status, 
-.camera-active {
+.camera-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.camera-status-indicator {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 6px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.recording-dot {
+    width: 8px;
+    height: 8px;
+    background: #ff4444;
+    border-radius: 50%;
+    animation: recordingPulse 1.5s infinite;
+}
+
+@keyframes recordingPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+.recording-text {
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.camera-info {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+}
+
+.resolution-info {
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    backdrop-filter: blur(10px);
+}
+
+/* Camera Error State */
+.camera-error-state {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ffeaa7, #fab1a0);
+}
+
+.error-content {
+    text-align: center;
+    padding: 2rem;
+    max-width: 300px;
+}
+
+/* Camera Loading State */
+.camera-loading-state {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--light-color), var(--surface-color));
+}
+
+.loading-content {
     text-align: center;
     padding: 2rem;
 }
 
-.camera-pulse {
-    animation: cameraPulse 2s infinite;
+.loading-spinner {
+    margin-bottom: 1rem;
 }
 
-@keyframes cameraPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.1); }
+/* Dark Mode Camera Styles */
+[data-theme="dark"] .camera-placeholder-enhanced {
+    background: linear-gradient(135deg, var(--inner-surface-color), var(--surface-color));
+}
+
+[data-theme="dark"] .camera-container-enhanced {
+    background: var(--surface-color);
+}
+
+[data-theme="dark"] .camera-error-state {
+    background: linear-gradient(135deg, #2d1b69, #ff6b6b);
+}
+
+[data-theme="dark"] .camera-loading-state {
+    background: linear-gradient(135deg, var(--inner-surface-color), var(--surface-color));
+}
+
+/* Dark mode zoom in button - always visible */
+[data-theme="dark"] .fullscreen-btn {
+    background: rgba(30, 30, 30, 0.9);
+    border: 2px solid rgba(102, 126, 234, 0.8);
+    color: #8fa4ea;
+}
+
+[data-theme="dark"] .fullscreen-btn::before {
+    background: linear-gradient(90deg, transparent, rgba(143,164,234,0.2), transparent);
+}
+
+[data-theme="dark"] .fullscreen-btn:hover {
+    background: rgba(30, 30, 30, 1);
+    border-color: #8fa4ea;
+    color: #8fa4ea;
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+[data-theme="dark"] .fullscreen-btn:focus {
+    background: rgba(30, 30, 30, 1);
+    border-color: #8fa4ea;
+    color: #8fa4ea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+[data-theme="dark"] .fullscreen-btn:active {
+    opacity: 0.8;
+}
+
+/* Fullscreen Camera Styles */
+.camera-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background: #000;
+}
+
+.camera-fullscreen .camera-video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.camera-fullscreen .camera-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.fullscreen-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 3;
+}
+
+/* Circular Close/Zoom Out Button */
+.exit-fullscreen {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    backdrop-filter: blur(15px);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+    animation: zoomOutButtonIntro 0.6s ease-out;
+}
+
+@keyframes zoomOutButtonIntro {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotate(-90deg);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2) rotate(-45deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.exit-fullscreen:hover {
+    background: rgba(220, 53, 69, 0.9);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 6px 25px rgba(220, 53, 69, 0.4);
+}
+
+.exit-fullscreen:active {
+    opacity: 0.8;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Dark mode circular button adjustments */
+[data-theme="dark"] .exit-fullscreen {
+    background: rgba(15, 15, 15, 0.9);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .exit-fullscreen:hover {
+    background: rgba(220, 53, 69, 0.9);
+    border-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 6px 25px rgba(220, 53, 69, 0.5);
 }
 
 /* Movement Controls */
@@ -310,7 +714,7 @@ body {
 }
 
 .speed-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.1);
+    opacity: 0.9;
 }
 
 /* Servo Display */
@@ -887,7 +1291,6 @@ body {
 }
 
 .badge.updated {
-    transform: scale(1.1);
     animation: highlight 0.5s ease;
 }
 
@@ -964,6 +1367,64 @@ body {
     h5 {
         font-size: 1rem;
     }
+
+    /* Mobile Camera Optimizations */
+    .camera-container-enhanced {
+        min-height: 250px;
+    }
+
+    .camera-placeholder-enhanced,
+    .camera-feed-enhanced,
+    .camera-error-state,
+    .camera-loading-state {
+        height: 250px;
+    }
+
+    .camera-status-enhanced {
+        padding: 1rem;
+    }
+
+    .camera-icon {
+        font-size: 2.5rem !important;
+    }
+
+    .camera-features {
+        gap: 0.5rem;
+    }
+
+    .feature-item {
+        font-size: 0.8rem;
+    }
+
+    .camera-controls {
+        flex-direction: column;
+        gap: 0.5rem !important;
+    }
+
+    .camera-btn {
+        font-size: 0.8rem;
+        padding: 0.375rem 0.75rem;
+    }
+
+    .camera-overlay .camera-status-indicator {
+        top: 10px;
+        left: 10px;
+        padding: 4px 8px;
+    }
+
+    .camera-overlay .camera-info {
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .recording-text {
+        font-size: 0.65rem;
+    }
+
+    .resolution-info {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+    }
 }
 
 /* Landscape mode optimizations */
@@ -982,8 +1443,21 @@ body {
         font-size: 18px;
     }
     
-    .camera-placeholder, .camera-feed {
-        min-height: 120px;
+    .camera-container-enhanced,
+    .camera-placeholder-enhanced,
+    .camera-feed-enhanced,
+    .camera-error-state,
+    .camera-loading-state {
+        height: 180px;
+        min-height: 180px;
+    }
+
+    .camera-status-enhanced {
+        padding: 1rem;
+    }
+
+    .camera-icon {
+        font-size: 2rem !important;
     }
 }
 
