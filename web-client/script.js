@@ -10,6 +10,7 @@ class NautilusController {
         this.currentLat = 40.7128; // Default to New York (mock location)
         this.currentLon = -74.0060;
         this.theme = localStorage.getItem('theme') || 'light';
+        this.cameraController = null;
         this.init();
     }
 
@@ -17,6 +18,7 @@ class NautilusController {
         this.setupEventListeners();
         this.initializeTheme();
         this.initializeMap();
+        this.initializeCameraController();
         this.startStatusUpdates();
         this.updateUI();
     }
@@ -118,8 +120,7 @@ class NautilusController {
             this.setSpeed(e.target.value);
         });
 
-        // Camera toggle
-        document.getElementById('cameraToggle').addEventListener('click', () => this.toggleCamera());        // Servo toggle
+        // Camera toggle is now handled by CameraController        // Servo toggle
         document.getElementById('servoToggle').addEventListener('click', () => this.toggleServo());
 
         // Fullscreen toggle
@@ -251,25 +252,10 @@ class NautilusController {
         }
     }
 
-    async toggleCamera() {
-        try {
-            const response = await fetch('/api/camera/toggle', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                this.updateCameraUI(data.camera_enabled);
-                this.updateStatusFromResponse(data);
-                this.highlightElement('cameraStatus');
-            }
-        } catch (error) {
-            console.error('Error toggling camera:', error);
-            this.showConnectionError();
-        }
+    initializeCameraController() {
+        // Initialize the enhanced camera controller
+        this.cameraController = new CameraController();
+        console.log('Camera controller initialized');
     }    async toggleServo() {
         try {
             const response = await fetch('/api/servo/toggle', {
@@ -414,18 +400,7 @@ class NautilusController {
         document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
     }
 
-    updateCameraUI(enabled) {
-        const placeholder = document.getElementById('cameraPlaceholder');
-        const feed = document.getElementById('cameraFeed');
-        
-        if (enabled) {
-            placeholder.style.display = 'none';
-            feed.style.display = 'block';
-        } else {
-            placeholder.style.display = 'block';
-            feed.style.display = 'none';
-        }
-    }
+    // Camera UI is now handled by CameraController
 
     updateButtonStates() {
         // Remove active class from all movement buttons
