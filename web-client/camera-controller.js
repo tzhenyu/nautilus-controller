@@ -131,6 +131,11 @@ class CameraController {
         try {
             this.updateToggleButton('stopping', 'Stopping...');
 
+            // Stop depth estimation if it's active (depth depends on camera)
+            if (window.controller && window.controller.depthController && window.controller.depthController.isDepthEnabled) {
+                await window.controller.depthController.autoStopDepth();
+            }
+
             if (this.stream) {
                 // Stop all tracks
                 this.stream.getTracks().forEach(track => {
@@ -376,6 +381,16 @@ class CameraController {
         if (fullscreenBtn) {
             fullscreenBtn.style.display = 'inline-block';
         }
+        
+        // Also show depth button when camera is active
+        this.showDepthButton();
+    }
+
+    showDepthButton() {
+        const depthBtn = document.getElementById('depthToggle');
+        if (depthBtn) {
+            depthBtn.style.display = 'inline-block';
+        }
     }
 
     hideFullscreenButton() {
@@ -383,9 +398,24 @@ class CameraController {
         if (fullscreenBtn) {
             fullscreenBtn.style.display = 'none';
         }
+        
+        // Also hide depth button when camera is inactive
+        this.hideDepthButton();
+    }
+
+    hideDepthButton() {
+        const depthBtn = document.getElementById('depthToggle');
+        if (depthBtn) {
+            depthBtn.style.display = 'none';
+        }
     }
 
     handleCameraError(error) {
+        // Stop depth estimation if it was active (camera dependency)
+        if (window.controller && window.controller.depthController && window.controller.depthController.isDepthEnabled) {
+            window.controller.depthController.autoStopDepth();
+        }
+
         let errorMessage = 'Unable to access camera';
         
         if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {

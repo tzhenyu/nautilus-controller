@@ -11,6 +11,19 @@ from time import sleep
 from gps3 import gps3
 import threading
 
+# Import depth service
+try:
+    import sys
+    import os
+    # Add parent directory to path to import depth_service
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from depth_service import create_depth_api_routes
+    DEPTH_SERVICE_AVAILABLE = True
+    print("[INFO] Depth Anything V2 service available")
+except ImportError as e:
+    print(f"[WARNING] Depth service not available: {e}")
+    DEPTH_SERVICE_AVAILABLE = False
+
 SERVO_MOTOR_GPIO = 17
 
 # Mock servo class for development on non-Raspberry Pi systems
@@ -45,6 +58,15 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="."), name="static")
 app.mount("/images", StaticFiles(directory="../images"), name="images")
 templates = Jinja2Templates(directory="static")
+
+# Add depth estimation routes if available
+if DEPTH_SERVICE_AVAILABLE:
+    try:
+        create_depth_api_routes(app)
+        print("[INFO] Depth estimation endpoints added successfully")
+    except Exception as e:
+        print(f"[ERROR] Failed to add depth estimation endpoints: {e}")
+        DEPTH_SERVICE_AVAILABLE = False
 
 try:
     from gpiozero import AngularServo

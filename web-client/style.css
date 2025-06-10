@@ -475,6 +475,111 @@ body {
     background: var(--surface-color);
 }
 
+/* Depth Estimation Styles */
+.depth-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.depth-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.depth-status-indicator {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 6px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.depth-processing-dot {
+    width: 8px;
+    height: 8px;
+    background: #17a2b8;
+    border-radius: 50%;
+    animation: depthProcessing 1.5s infinite;
+}
+
+@keyframes depthProcessing {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+.depth-status-text {
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.depth-btn {
+    transition: all 0.3s ease;
+}
+
+.depth-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Split view for camera and depth */
+.camera-container-enhanced.depth-mode-side-by-side {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+}
+
+.camera-container-enhanced.depth-mode-side-by-side .camera-feed-enhanced {
+    width: 100%;
+}
+
+.camera-container-enhanced.depth-mode-side-by-side .depth-container {
+    width: 100%;
+}
+
+.camera-container-enhanced.depth-mode-side-by-side .camera-video {
+    border-radius: 0;
+}
+
+.camera-container-enhanced.depth-mode-side-by-side #depthCanvas {
+    border-radius: 0;
+}
+
+/* Remove split-view rule - using grid layout instead */
+
+/* Depth canvas styling */
+#depthCanvas {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+/* Dark mode depth styles */
+[data-theme="dark"] .depth-container {
+    background: var(--surface-color);
+}
+
+[data-theme="dark"] .depth-status-indicator {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 [data-theme="dark"] .camera-error-state {
     background: linear-gradient(135deg, #2d1b69, #ff6b6b);
 }

@@ -11,6 +11,7 @@ class NautilusController {
         this.currentLon = -74.0060;
         this.theme = localStorage.getItem('theme') || 'light';
         this.cameraController = null;
+        this.depthController = null;
         this.init();
     }
 
@@ -256,6 +257,10 @@ class NautilusController {
         // Initialize the enhanced camera controller
         this.cameraController = new CameraController();
         console.log('Camera controller initialized');
+        
+        // Initialize depth controller
+        this.depthController = new DepthController(this.cameraController);
+        console.log('Depth controller initialized');
     }    async toggleServo() {
         try {
             const response = await fetch('/api/servo/toggle', {
@@ -445,7 +450,15 @@ class NautilusController {
                 break;
             case 'c':
                 e.preventDefault();
-                this.toggleCamera();
+                if (this.cameraController) {
+                    this.cameraController.toggleCamera();
+                }
+                break;
+            case 'e':
+                e.preventDefault();
+                if (this.depthController) {
+                    this.depthController.toggleDepth();
+                }
                 break;
             case 'v':
                 e.preventDefault();
@@ -545,6 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('WASD or Arrow Keys: Move');
     console.log('Space: Stop');
     console.log('C: Toggle Camera');
+    console.log('E: Toggle Depth');
     console.log('V: Toggle Servo');
     console.log('F: Toggle Fullscreen');
 });
