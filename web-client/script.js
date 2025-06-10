@@ -12,6 +12,7 @@ class NautilusController {
         this.theme = localStorage.getItem('theme') || 'light';
         this.cameraController = null;
         this.depthController = null;
+        this.joystickController = null;
         this.init();
     }
 
@@ -20,6 +21,7 @@ class NautilusController {
         this.initializeTheme();
         this.initializeMap();
         this.initializeCameraController();
+        this.initializeJoystickController();
         this.startStatusUpdates();
         this.updateUI();
     }
@@ -261,6 +263,16 @@ class NautilusController {
         // Initialize depth controller
         this.depthController = new DepthController(this.cameraController);
         console.log('Depth controller initialized');
+    }
+
+    initializeJoystickController() {
+        // Initialize Joystick Controller for enhanced movement controls
+        if (typeof JoystickController !== 'undefined') {
+            this.joystickController = new JoystickController(this);
+            console.log('Joystick controller initialized');
+        } else {
+            console.warn('JoystickController not available');
+        }
     }    async toggleServo() {
         try {
             const response = await fetch('/api/servo/toggle', {
@@ -423,6 +435,12 @@ class NautilusController {
     }
 
     handleKeyDown(e) {
+        // Skip movement keys if joystick is active
+        const isMovementKey = ['w', 's', 'a', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(e.key.toLowerCase());
+        if (isMovementKey && this.joystickController && this.joystickController.isInJoystickMode()) {
+            return; // Let joystick handle movement
+        }
+
         switch(e.key.toLowerCase()) {
             case 'w':
             case 'arrowup':
@@ -468,10 +486,22 @@ class NautilusController {
                 e.preventDefault();
                 this.toggleFullscreen();
                 break;
+            case 'j':
+                e.preventDefault();
+                if (this.joystickController) {
+                    this.joystickController.toggleControlMode();
+                }
+                break;
         }
     }
 
     handleKeyUp(e) {
+        // Skip movement keys if joystick is active
+        const isMovementKey = ['w', 's', 'a', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(e.key.toLowerCase());
+        if (isMovementKey && this.joystickController && this.joystickController.isInJoystickMode()) {
+            return; // Let joystick handle movement
+        }
+
         switch(e.key.toLowerCase()) {
             case 'w':
             case 's':
@@ -555,11 +585,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Add some helpful keyboard shortcuts info
     console.log('Keyboard shortcuts:');
-    console.log('WASD or Arrow Keys: Move');
+    console.log('WASD or Arrow Keys: Move (when in button mode)');
     console.log('Space: Stop');
     console.log('C: Toggle Camera');
     console.log('E: Toggle Depth');
     console.log('V: Toggle Servo');
+    console.log('J: Toggle Joystick/Button Controls');
     console.log('F: Toggle Fullscreen');
 });
 

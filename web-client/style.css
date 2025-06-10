@@ -11,11 +11,13 @@
     --light-color: #f8f9fa;
     --dark-color: #212529;
     --bg-color: #ffffff;
+    --light-bg: #f8f9fa;
     --surface-color: #ffffff;
     --text-color: #212529;
     --text-muted: #6c757d;
     --border-color: #dee2e6;
     --shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
 }
 
@@ -23,11 +25,13 @@
 [data-theme="dark"] {
     --bg-color: #0f0f0f;
     --surface-color: #1a1a1a;
+    --light-bg: #27272a;
     --text-color: #ffffff;
     --text-muted: #a1a1aa;
     --border-color: #3f3f46;
     --light-color: #27272a;
     --shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.4);
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.6);
     --inner-border-color: #52525b;
     --inner-surface-color: #262626;
@@ -224,6 +228,7 @@ body {
     font-weight: 600;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    padding: 10px 20px !important;
 }
 
 .camera-btn:hover {
@@ -740,7 +745,8 @@ body {
     overflow: hidden;
 }
 
-.control-btn::before {    content: '';
+.control-btn::before {
+    content: '';
     position: absolute;
     top: 0;
     left: -100%;
@@ -1058,7 +1064,7 @@ body {
 
 /* Map Container */
 .map-container {
-    height: 250px;
+    height: 320px;
     width: 100%;
     border-radius: 0.5rem;
     overflow: hidden;
@@ -1303,7 +1309,7 @@ body {
     }
     
     .map-container {
-        height: 200px;
+        height: 270px;
     }
 }
 
@@ -1601,4 +1607,439 @@ body {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+/* Enhanced Joystick Controls */
+.joystick-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem 1rem;
+}
+
+.joystick-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.joystick-base {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 6px solid var(--primary-color);
+    box-shadow: 
+        inset 0 0 30px rgba(0,0,0,0.08),
+        0 12px 40px rgba(0,0,0,0.12),
+        0 0 0 1px rgba(255,255,255,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    touch-action: none;
+    transition: all 0.3s ease;
+}
+
+.joystick-base:hover {
+    box-shadow: 
+        inset 0 0 30px rgba(0,0,0,0.12),
+        0 16px 50px rgba(0,0,0,0.18),
+        0 0 0 1px rgba(255,255,255,0.9);
+}
+
+.joystick-knob {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), #0b5ed7);
+    border: 4px solid #ffffff;
+    box-shadow: 
+        0 6px 20px rgba(0,0,0,0.25),
+        inset 0 3px 12px rgba(255,255,255,0.4),
+        0 0 0 1px rgba(0,0,0,0.05);
+    cursor: grab;
+    transition: all 0.15s cubic-bezier(0.2, 0, 0.38, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.joystick-knob:hover {
+    box-shadow: 
+        0 8px 25px rgba(0,0,0,0.3),
+        inset 0 3px 12px rgba(255,255,255,0.5),
+        0 0 0 1px rgba(0,0,0,0.08);
+}
+
+.joystick-knob.emergency-mode {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    border-color: #ffffff;
+    animation: emergencyPulse 0.6s ease-in-out;
+}
+
+@keyframes emergencyPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+.joystick-knob:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+}
+
+.joystick-center-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff4757, #ff3742);
+    box-shadow: 
+        inset 0 2px 8px rgba(255,255,255,0.3),
+        0 4px 16px rgba(255, 71, 87, 0.4),
+        0 0 0 3px rgba(255,255,255,0.9),
+        0 0 0 4px rgba(255, 71, 87, 0.2);
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.joystick-center-dot::before {
+    content: "●";
+    font-size: 12px;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.joystick-center-dot:hover {
+    background: linear-gradient(135deg, #ff3742, #ff2d3e);
+    box-shadow: 
+        inset 0 2px 8px rgba(255,255,255,0.4),
+        0 6px 20px rgba(255, 71, 87, 0.6),
+        0 0 0 3px rgba(255,255,255,0.95),
+        0 0 0 4px rgba(255, 71, 87, 0.3);
+    transform: scale(1.05);
+}
+
+.joystick-center-dot:hover::before {
+    color: white;
+    font-size: 14px;
+}
+
+.joystick-center-dot:active {
+    transform: scale(0.9);
+    background: linear-gradient(135deg, #ff2d3e, #e7252f);
+    box-shadow: 
+        inset 0 3px 10px rgba(0,0,0,0.3),
+        0 2px 10px rgba(255, 71, 87, 0.4),
+        0 0 0 3px rgba(255,255,255,0.9),
+        0 0 0 4px rgba(255, 71, 87, 0.2);
+}
+
+.joystick-center-dot:active::before {
+    content: "●";
+    color: rgba(255,255,255,0.9);
+    font-size: 10px;
+}
+
+/* Touch feedback for mobile */
+@media (max-width: 768px) {
+    .joystick-center-dot {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+    
+    .joystick-center-dot::before {
+        font-size: 14px;
+    }
+    
+    .joystick-center-dot:active {
+        transform: scale(0.85);
+        box-shadow: 
+            inset 0 4px 12px rgba(0,0,0,0.4),
+            0 2px 8px rgba(255, 71, 87, 0.5),
+            0 0 0 3px rgba(255,255,255,0.9),
+            0 0 0 4px rgba(255, 71, 87, 0.3);
+    }
+}
+
+.joystick-directions {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.direction-indicator {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,249,250,0.9));
+    border: 3px solid var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    opacity: 0.7;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 4px 12px rgba(0,0,0,0.1),
+        inset 0 1px 3px rgba(255,255,255,0.6);
+}
+
+.direction-indicator.active {
+    opacity: 1;
+    background: linear-gradient(135deg, var(--primary-color), #0b5ed7);
+    color: white;
+    transform: scale(1.15);
+    box-shadow: 
+        0 0 20px rgba(13, 110, 253, 0.6),
+        0 6px 20px rgba(0,0,0,0.2),
+        inset 0 1px 3px rgba(255,255,255,0.3);
+    border-color: rgba(255,255,255,0.8);
+}
+
+/* Direction positions - 4 directions only */
+.direction-n { 
+    top: -20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+}
+.direction-e { 
+    top: 50%; 
+    right: -20px; 
+    transform: translateY(-50%); 
+}
+.direction-s { 
+    bottom: -20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+}
+.direction-w { 
+    top: 50%; 
+    left: -20px; 
+    transform: translateY(-50%); 
+}
+
+.joystick-info {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.direction-display,
+.intensity-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--light-bg);
+    padding: 0.75rem 1rem;
+    border-radius: 25px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.direction-label,
+.intensity-label {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+/* Control Mode Toggle */
+.control-mode-toggle {
+    margin-left: auto;
+}
+
+#controlModeToggle {
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+#controlModeToggle:hover {
+    background: #007bff;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+
+
+/* Dark Mode Joystick Styles */
+[data-theme="dark"] .joystick-base {
+    background: linear-gradient(135deg, #2d3748, #4a5568);
+    border-color: #0d6efd;
+    box-shadow: 
+        inset 0 0 30px rgba(0,0,0,0.4),
+        0 12px 40px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(255,255,255,0.1);
+}
+
+[data-theme="dark"] .joystick-base:hover {
+    box-shadow: 
+        inset 0 0 30px rgba(0,0,0,0.5),
+        0 16px 50px rgba(0,0,0,0.7),
+        0 0 0 1px rgba(255,255,255,0.15);
+}
+
+[data-theme="dark"] .joystick-knob {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+    border-color: #ffffff;
+    box-shadow: 
+        0 6px 20px rgba(0,0,0,0.4),
+        inset 0 3px 12px rgba(255,255,255,0.2),
+        0 0 0 1px rgba(0,0,0,0.1);
+}
+
+[data-theme="dark"] .joystick-knob:hover {
+    box-shadow: 
+        0 8px 25px rgba(0,0,0,0.5),
+        inset 0 3px 12px rgba(255,255,255,0.3),
+        0 0 0 1px rgba(0,0,0,0.15);
+}
+
+[data-theme="dark"] .direction-indicator {
+    background: linear-gradient(135deg, rgba(45, 55, 72, 0.95), rgba(74, 85, 104, 0.9));
+    border-color: #0d6efd;
+    color: #0d6efd;
+    box-shadow: 
+        0 4px 12px rgba(0,0,0,0.3),
+        inset 0 1px 3px rgba(255,255,255,0.1);
+}
+
+[data-theme="dark"] .direction-indicator.active {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+    color: white;
+    border-color: rgba(255,255,255,0.8);
+}
+
+[data-theme="dark"] .direction-display,
+[data-theme="dark"] .intensity-display {
+    background: #343a40;
+    border-color: #495057;
+}
+
+[data-theme="dark"] .direction-label,
+[data-theme="dark"] .intensity-label {
+    color: #f8f9fa;
+}
+
+[data-theme="dark"] #controlModeToggle {
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+[data-theme="dark"] #controlModeToggle:hover {
+    background: #007bff;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .joystick-base {
+        width: 180px;
+        height: 180px;
+        border-width: 4px;
+    }
+    
+    .joystick-knob {
+        width: 75px;
+        height: 75px;
+        border-width: 3px;
+    }
+    
+    .joystick-center-dot {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .direction-indicator {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+        border-width: 2px;
+    }
+    
+    /* Update mobile direction positions */
+    .direction-n { top: -18px; }
+    .direction-e { right: -18px; }
+    .direction-s { bottom: -18px; }
+    .direction-w { left: -18px; }
+    
+    .joystick-info {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .direction-display,
+    .intensity-display {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Touch-specific optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .joystick-base {
+        width: 200px;
+        height: 200px;
+        border-width: 5px;
+    }
+    
+    .joystick-knob {
+        width: 85px;
+        height: 85px;
+        border-width: 3px;
+    }
+    
+    .joystick-center-dot {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .direction-indicator {
+        width: 44px;
+        height: 44px;
+        font-size: 1.4rem;
+        border-width: 3px;
+    }
+    
+    /* Touch direction positions */
+    .direction-n { top: -22px; }
+    .direction-e { right: -22px; }
+    .direction-s { bottom: -22px; }
+    .direction-w { left: -22px; }
+    
+    .control-btn {
+        width: 80px;
+        height: 80px;
+        font-size: 1.75rem;
+    }
 }

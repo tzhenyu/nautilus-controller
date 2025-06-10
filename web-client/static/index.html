@@ -128,12 +128,38 @@
                         <div class="mb-4">
                             <div class="card border-0 shadow-sm">
                                 <div class="card-header bg-light border-0">
-                                    <h6 class="mb-0 fw-semibold">
-                                        <i class="fas fa-arrows-alt text-primary me-2"></i>Movement Controls
-                                    </h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0 fw-semibold">
+                                            <i class="fas fa-arrows-alt text-primary me-2"></i>Movement Controls
+                                        </h6>
+                                        <div class="control-mode-toggle">
+                                            <button id="controlModeToggle" class="btn btn-outline-secondary btn-sm rounded-pill" title="Toggle Control Mode">
+                                                <i class="fas fa-gamepad me-1"></i>
+                                                <span id="controlModeText">Joystick</span>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="card-body p-4">
-                                    <div class="movement-controls">
+                                    <!-- Joystick Controls (Mobile-friendly) -->
+                                    <div id="joystickControls" class="joystick-container">
+                                        <div class="joystick-wrapper">
+                                            <div class="joystick-base" id="joystickBase">
+                                                <div class="joystick-knob" id="joystickKnob">
+                                                    <div class="joystick-center-dot"></div>
+                                                </div>
+                                                <div class="joystick-directions">
+                                                    <div class="direction-indicator direction-n">↑</div>
+                                                    <div class="direction-indicator direction-e">→</div>
+                                                    <div class="direction-indicator direction-s">↓</div>
+                                                    <div class="direction-indicator direction-w">←</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Traditional Button Controls -->
+                                    <div id="buttonControls" class="movement-controls" style="display: none;">
                                         <div class="control-grid">
                                             <div class="control-row justify-content-center mb-3">
                                                 <button id="forwardBtn" class="btn btn-primary control-btn" data-direction="forward" title="Move Forward">
@@ -158,6 +184,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+
                                 </div>
                             </div>
                         </div>                        <!-- Speed and Servo Controls -->
@@ -360,6 +388,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="/static/camera-controller.js"></script>
     <script src="/static/depth-controller.js"></script>
+    <script src="/static/joystick-controller.js"></script>
     <script src="/static/script.js"></script>
 </body>
 </html>
