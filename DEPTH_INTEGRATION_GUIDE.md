@@ -23,6 +23,7 @@ Run the download script to get the pre-trained Depth Anything V2 model:
 ```bash
 python download_depth_model.py
 ```
+> Put the model inside checkpoints folder
 
 **Model Options:**
 - `vits` - Small model (~400MB, faster inference)
