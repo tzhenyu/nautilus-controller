@@ -240,7 +240,7 @@ class CameraController {
         const fullscreenBtn = document.getElementById('fullscreenCamera');
         if (fullscreenBtn) {
             fullscreenBtn.title = 'Zoom Out Camera';
-            fullscreenBtn.innerHTML = '<i class="fas fa-search-minus"></i>';
+            fullscreenBtn.innerHTML = '<i class="fas fa-search-minus me-1"></i><span>Zoom</span>';
         }
         
         // Log for user feedback
@@ -265,7 +265,7 @@ class CameraController {
         const fullscreenBtn = document.getElementById('fullscreenCamera');
         if (fullscreenBtn) {
             fullscreenBtn.title = 'Zoom In Camera';
-            fullscreenBtn.innerHTML = '<i class="fas fa-search-plus"></i>';
+            fullscreenBtn.innerHTML = '<i class="fas fa-search-plus me-1"></i><span>Zoom</span>';
         }
         
         // Exit browser fullscreen

@@ -235,54 +235,11 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* Zoom In Camera Button - Always visible when camera is active */
-.fullscreen-btn {
-    background: rgba(255, 255, 255, 0.9);
-    border: 2px solid rgba(102, 126, 234, 0.8);
-    color: #667eea;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    position: relative;
-    overflow: hidden;
-}
-
-.fullscreen-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s;
-}
-
-.fullscreen-btn:hover::before {
-    left: 100%;
-}
-
-.fullscreen-btn:hover {
-    background: rgba(255, 255, 255, 1);
-    border-color: #667eea;
-    color: #667eea;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-}
-
-.fullscreen-btn:focus {
-    background: rgba(255, 255, 255, 1);
-    border-color: #667eea;
-    color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-}
-
-.fullscreen-btn:active {
-    opacity: 0.8;
-}
+/* Zoom In Camera Button - Now uses standard Bootstrap styling for consistency */
 
 .camera-container-enhanced {
     position: relative;
-    min-height: 300px;
+    min-height: 450px;
     background: var(--surface-color);
     display: flex;
     align-items: center;
@@ -292,7 +249,7 @@ body {
 /* Camera Placeholder Enhanced */
 .camera-placeholder-enhanced {
     width: 100%;
-    height: 300px;
+    height: 450px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -363,7 +320,7 @@ body {
 /* Camera Feed Enhanced */
 .camera-feed-enhanced {
     width: 100%;
-    height: 300px;
+    height: 450px;
     position: relative;
     background: #000;
     display: flex;
@@ -439,7 +396,7 @@ body {
 /* Camera Error State */
 .camera-error-state {
     width: 100%;
-    height: 300px;
+    height: 450px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -455,7 +412,7 @@ body {
 /* Camera Loading State */
 .camera-loading-state {
     width: 100%;
-    height: 300px;
+    height: 450px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -539,7 +496,6 @@ body {
 }
 
 .depth-btn:hover {
-    transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -593,35 +549,7 @@ body {
     background: linear-gradient(135deg, var(--inner-surface-color), var(--surface-color));
 }
 
-/* Dark mode zoom in button - always visible */
-[data-theme="dark"] .fullscreen-btn {
-    background: rgba(30, 30, 30, 0.9);
-    border: 2px solid rgba(102, 126, 234, 0.8);
-    color: #8fa4ea;
-}
-
-[data-theme="dark"] .fullscreen-btn::before {
-    background: linear-gradient(90deg, transparent, rgba(143,164,234,0.2), transparent);
-}
-
-[data-theme="dark"] .fullscreen-btn:hover {
-    background: rgba(30, 30, 30, 1);
-    border-color: #8fa4ea;
-    color: #8fa4ea;
-    transform: translateY(-1px) scale(1.05);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-[data-theme="dark"] .fullscreen-btn:focus {
-    background: rgba(30, 30, 30, 1);
-    border-color: #8fa4ea;
-    color: #8fa4ea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-}
-
-[data-theme="dark"] .fullscreen-btn:active {
-    opacity: 0.8;
-}
+/* Dark theme fullscreen button styles removed - now uses standard Bootstrap styling */
 
 /* Fullscreen Camera Styles */
 .camera-fullscreen {
@@ -1064,12 +992,24 @@ body {
 
 /* Map Container */
 .map-container {
-    height: 320px;
+    height: 380px;
     width: 100%;
     border-radius: 0.5rem;
     overflow: hidden;
     border: 1px solid var(--border-color);
 }
+
+/* Center the FontAwesome icon in the focus button */
+.leaflet-control-zoom a i.fas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    line-height: 1;
+}
+
+
 
 /* Connection Status */
 .connection-status {
@@ -1309,7 +1249,7 @@ body {
     }
     
     .map-container {
-        height: 270px;
+        height: 320px;
     }
 }
 
@@ -1481,14 +1421,14 @@ body {
 
     /* Mobile Camera Optimizations */
     .camera-container-enhanced {
-        min-height: 250px;
+        min-height: 350px;
     }
 
     .camera-placeholder-enhanced,
     .camera-feed-enhanced,
     .camera-error-state,
     .camera-loading-state {
-        height: 250px;
+        height: 350px;
     }
 
     .camera-status-enhanced {
@@ -1559,8 +1499,8 @@ body {
     .camera-feed-enhanced,
     .camera-error-state,
     .camera-loading-state {
-        height: 180px;
-        min-height: 180px;
+        height: 280px;
+        min-height: 280px;
     }
 
     .camera-status-enhanced {

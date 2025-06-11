@@ -126,6 +126,8 @@ class NautilusController {
         // Camera toggle is now handled by CameraController        // Servo toggle
         document.getElementById('servoToggle').addEventListener('click', () => this.toggleServo());
 
+
+
         // Fullscreen toggle
         document.getElementById('fullscreenBtn').addEventListener('click', () => this.toggleFullscreen());        // Keyboard controls
         document.addEventListener('keydown', (e) => this.handleKeyDown(e));
@@ -162,7 +164,45 @@ class NautilusController {
                         <small>Position updates in real-time</small>`)
             .openPopup();
 
+        // Add custom focus control
+        this.addFocusControl();
+
         console.log('Map initialized at:', this.currentLat, this.currentLon);
+    }
+
+    addFocusControl() {
+        // Store reference to this for use in the control
+        const self = this;
+        
+        // Create custom focus control similar to Leaflet's zoom controls
+        const FocusControl = L.Control.extend({
+            onAdd: function(map) {
+                const container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-bar leaflet-control');
+                
+                const button = L.DomUtil.create('a', 'leaflet-control-zoom-in', container);
+                button.innerHTML = '<i class="fas fa-crosshairs"></i>';
+                button.href = '#';
+                button.title = 'Center map on Nautilus position';
+                
+                // Prevent map interaction when clicking the button
+                L.DomEvent.disableClickPropagation(button);
+                L.DomEvent.on(button, 'click', L.DomEvent.preventDefault);
+                
+                // Add click event with proper context
+                L.DomEvent.on(button, 'click', function(e) {
+                    self.focusMapOnNautilus();
+                });
+                
+                return container;
+            },
+            
+            onRemove: function(map) {
+                // Nothing to clean up
+            }
+        });
+        
+        // Add the control to the map (positioned below zoom controls)
+        new FocusControl({ position: 'topleft' }).addTo(this.map);
     }
 
     updateMapPosition(lat, lon) {
@@ -182,6 +222,29 @@ class NautilusController {
             // Store current position
             this.currentLat = lat;
             this.currentLon = lon;
+        }
+    }
+
+    focusMapOnNautilus() {
+        if (this.map && this.robotMarker) {
+            // Get the current marker position (most up-to-date)
+            const markerPosition = this.robotMarker.getLatLng();
+            
+            // Force center the map on current Nautilus position with smooth animation
+            this.map.setView([markerPosition.lat, markerPosition.lng], this.map.getZoom(), {
+                animate: true,
+                duration: 1.0
+            });
+            
+            // Alternative method to ensure centering
+            setTimeout(() => {
+                this.map.panTo([markerPosition.lat, markerPosition.lng]);
+            }, 100);
+            
+            // Briefly highlight the robot marker by opening its popup
+            this.robotMarker.openPopup();
+            
+            console.log('Map focused on Nautilus position:', markerPosition.lat, markerPosition.lng);
         }
     }
 
@@ -379,16 +442,21 @@ class NautilusController {
         const gpsStatus = data.gps_status || data.state?.gps_status || 'unknown';
         const gpsElement = document.getElementById('gpsStatus');
         if (gpsElement) {
-            gpsElement.textContent = gpsStatus;
-            
-            // Update GPS status badge color based on status
-            let badgeClass = 'bg-secondary';
-            if (gpsStatus.includes('active')) badgeClass = 'bg-success';
-            else if (gpsStatus.includes('connected')) badgeClass = 'bg-info';
-            else if (gpsStatus.includes('error')) badgeClass = 'bg-danger';
-            else if (gpsStatus.includes('initializing')) badgeClass = 'bg-warning';
-            
-            gpsElement.className = `badge ${badgeClass}`;
+            // Hide the GPS status badge when status is 'connected'
+            if (gpsStatus.includes('connected')) {
+                gpsElement.style.display = 'none';
+            } else {
+                gpsElement.style.display = 'inline-block';
+                gpsElement.textContent = gpsStatus;
+                
+                // Update GPS status badge color based on status
+                let badgeClass = 'bg-secondary';
+                if (gpsStatus.includes('active')) badgeClass = 'bg-success';
+                else if (gpsStatus.includes('error')) badgeClass = 'bg-danger';
+                else if (gpsStatus.includes('initializing')) badgeClass = 'bg-warning';
+                
+                gpsElement.className = `badge ${badgeClass} rounded-pill`;
+            }
         }
 
         // Update map position if coordinates have changed
@@ -472,7 +540,7 @@ class NautilusController {
                     this.cameraController.toggleCamera();
                 }
                 break;
-            case 'e':
+            case 'z':
                 e.preventDefault();
                 if (this.depthController) {
                     this.depthController.toggleDepth();
@@ -588,7 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('WASD or Arrow Keys: Move (when in button mode)');
     console.log('Space: Stop');
     console.log('C: Toggle Camera');
-    console.log('E: Toggle Depth');
+    console.log('D: Toggle Depth');
     console.log('V: Toggle Servo');
     console.log('J: Toggle Joystick/Button Controls');
     console.log('F: Toggle Fullscreen');
