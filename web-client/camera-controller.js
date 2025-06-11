@@ -114,6 +114,7 @@ class CameraController {
             this.updateResolutionInfo();
             this.updateToggleButton('active', 'Stop Camera');
             this.showFullscreenButton();
+            this.showAIDetectionButton();
             
             this.isActive = true;
             console.log('Camera started successfully');
@@ -131,10 +132,7 @@ class CameraController {
         try {
             this.updateToggleButton('stopping', 'Stopping...');
 
-            // Stop depth estimation if it's active (depth depends on camera)
-            if (window.controller && window.controller.depthController && window.controller.depthController.isDepthEnabled) {
-                await window.controller.depthController.autoStopDepth();
-            }
+
 
             if (this.stream) {
                 // Stop all tracks
@@ -159,6 +157,7 @@ class CameraController {
             this.showPlaceholder();
             this.updateToggleButton('inactive', 'Start Camera');
             this.hideFullscreenButton();
+            this.hideAIDetectionButton();
             
             this.isActive = false;
             console.log('Camera stopped successfully');
@@ -382,15 +381,7 @@ class CameraController {
             fullscreenBtn.style.display = 'inline-block';
         }
         
-        // Also show depth button when camera is active
-        this.showDepthButton();
-    }
 
-    showDepthButton() {
-        const depthBtn = document.getElementById('depthToggle');
-        if (depthBtn) {
-            depthBtn.style.display = 'inline-block';
-        }
     }
 
     hideFullscreenButton() {
@@ -398,23 +389,23 @@ class CameraController {
         if (fullscreenBtn) {
             fullscreenBtn.style.display = 'none';
         }
-        
-        // Also hide depth button when camera is inactive
-        this.hideDepthButton();
     }
 
-    hideDepthButton() {
-        const depthBtn = document.getElementById('depthToggle');
-        if (depthBtn) {
-            depthBtn.style.display = 'none';
+    showAIDetectionButton() {
+        const aiBtn = document.getElementById('aiDetectionToggle');
+        if (aiBtn) {
+            aiBtn.style.display = 'inline-block';
+        }
+    }
+
+    hideAIDetectionButton() {
+        const aiBtn = document.getElementById('aiDetectionToggle');
+        if (aiBtn) {
+            aiBtn.style.display = 'none';
         }
     }
 
     handleCameraError(error) {
-        // Stop depth estimation if it was active (camera dependency)
-        if (window.controller && window.controller.depthController && window.controller.depthController.isDepthEnabled) {
-            window.controller.depthController.autoStopDepth();
-        }
 
         let errorMessage = 'Unable to access camera';
         

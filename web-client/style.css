@@ -437,109 +437,9 @@ body {
     background: var(--surface-color);
 }
 
-/* Depth Estimation Styles */
-.depth-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
-.depth-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    z-index: 10;
-}
 
-.depth-status-indicator {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 6px 12px;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-}
 
-.depth-processing-dot {
-    width: 8px;
-    height: 8px;
-    background: #17a2b8;
-    border-radius: 50%;
-    animation: depthProcessing 1.5s infinite;
-}
-
-@keyframes depthProcessing {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.2); }
-}
-
-.depth-status-text {
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-
-.depth-btn {
-    transition: all 0.3s ease;
-}
-
-.depth-btn:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Split view for camera and depth */
-.camera-container-enhanced.depth-mode-side-by-side {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-}
-
-.camera-container-enhanced.depth-mode-side-by-side .camera-feed-enhanced {
-    width: 100%;
-}
-
-.camera-container-enhanced.depth-mode-side-by-side .depth-container {
-    width: 100%;
-}
-
-.camera-container-enhanced.depth-mode-side-by-side .camera-video {
-    border-radius: 0;
-}
-
-.camera-container-enhanced.depth-mode-side-by-side #depthCanvas {
-    border-radius: 0;
-}
-
-/* Remove split-view rule - using grid layout instead */
-
-/* Depth canvas styling */
-#depthCanvas {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: cover;
-    border-radius: 0;
-}
-
-/* Dark mode depth styles */
-[data-theme="dark"] .depth-container {
-    background: var(--surface-color);
-}
-
-[data-theme="dark"] .depth-status-indicator {
-    background: rgba(255, 255, 255, 0.1);
-}
 
 [data-theme="dark"] .camera-error-state {
     background: linear-gradient(135deg, #2d1b69, #ff6b6b);
@@ -1982,4 +1882,218 @@ body {
         height: 80px;
         font-size: 1.75rem;
     }
+}
+
+/* AI Detection Overlay Styles */
+.ai-detection-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.detection-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 11;
+}
+
+.detection-info-panel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 12px;
+    color: white;
+    font-size: 0.85rem;
+    min-width: 180px;
+    z-index: 12;
+}
+
+[data-theme="dark"] .detection-info-panel {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detection-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.detection-count,
+.detection-fps {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 500;
+}
+
+.detected-objects {
+    max-height: 120px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.detected-objects::-webkit-scrollbar {
+    width: 4px;
+}
+
+.detected-objects::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.detected-objects::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+.detected-object-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 0.8rem;
+}
+
+.object-name {
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.object-count {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+}
+
+/* AI Detection Button Styles */
+#aiDetectionToggle {
+    transition: none;
+}
+
+#aiDetectionToggle:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+#aiDetectionToggle.btn-success {
+    background: #198754;
+    border: none;
+}
+
+#aiDetectionToggle.btn-danger {
+    background: #dc3545;
+    border: none;
+}
+
+#aiDetectionToggle.btn-warning {
+    background: #ffc107;
+    border: none;
+    color: #000;
+}
+
+/* Camera controls enhancement for AI detection */
+.camera-controls {
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.camera-controls .btn {
+    flex-shrink: 0;
+}
+
+/* Show AI detection button when camera is active */
+.camera-active #aiDetectionToggle {
+    display: inline-block !important;
+}
+
+/* AI Detection status indicator animation */
+@keyframes aiPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.ai-detection-active #aiDetectionStatusBadge {
+    animation: aiPulse 2s infinite;
+}
+
+/* Mobile responsiveness for AI detection */
+@media (max-width: 768px) {
+    .detection-info-panel {
+        top: 8px;
+        right: 8px;
+        left: 8px;
+        width: auto;
+        font-size: 0.8rem;
+        padding: 10px;
+    }
+    
+    .detection-stats {
+        flex-direction: row;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+    
+    .detected-objects {
+        max-height: 80px;
+    }
+    
+    .camera-controls {
+        justify-content: center;
+    }
+    
+    .camera-controls .btn {
+        font-size: 0.85rem;
+        padding: 0.375rem 0.75rem;
+    }
+}
+
+/* Error state for AI detection */
+#aiDetectionError {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    display: none;
+    z-index: 15;
+}
+
+/* Loading state for AI detection */
+.ai-detection-processing {
+    position: relative;
+}
+
+.ai-detection-processing::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: aiScan 2s infinite;
+    pointer-events: none;
+    z-index: 13;
+}
+
+@keyframes aiScan {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }

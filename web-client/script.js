@@ -11,8 +11,8 @@ class NautilusController {
         this.currentLon = -74.0060;
         this.theme = localStorage.getItem('theme') || 'light';
         this.cameraController = null;
-        this.depthController = null;
         this.joystickController = null;
+        this.aiDetectionController = null;
         this.init();
     }
 
@@ -21,6 +21,7 @@ class NautilusController {
         this.initializeTheme();
         this.initializeMap();
         this.initializeCameraController();
+        this.initializeAIDetectionController();
         this.initializeJoystickController();
         this.startStatusUpdates();
         this.updateUI();
@@ -322,10 +323,6 @@ class NautilusController {
         // Initialize the enhanced camera controller
         this.cameraController = new CameraController();
         console.log('Camera controller initialized');
-        
-        // Initialize depth controller
-        this.depthController = new DepthController(this.cameraController);
-        console.log('Depth controller initialized');
     }
 
     initializeJoystickController() {
@@ -335,6 +332,16 @@ class NautilusController {
             console.log('Joystick controller initialized');
         } else {
             console.warn('JoystickController not available');
+        }
+    }
+
+    initializeAIDetectionController() {
+        // Initialize AI Detection Controller for object detection
+        if (typeof AIDetectionController !== 'undefined') {
+            this.aiDetectionController = new AIDetectionController();
+            console.log('AI Detection controller initialized');
+        } else {
+            console.warn('AIDetectionController not available');
         }
     }    async toggleServo() {
         try {
@@ -471,7 +478,15 @@ class NautilusController {
         // Update camera status
         const cameraEnabled = data.state?.camera_enabled || data.camera_enabled || false;
         document.getElementById('cameraStatus').textContent = cameraEnabled ? 'ON' : 'OFF';
-        document.getElementById('cameraStatus').className = `badge ${cameraEnabled ? 'bg-success' : 'bg-danger'}`;        // Update servo status
+        document.getElementById('cameraStatus').className = `badge ${cameraEnabled ? 'bg-success' : 'bg-danger'} rounded-pill`;
+
+        // Update AI detection status
+        const aiDetectionEnabled = data.state?.ai_detection_enabled || data.ai_detection_enabled || false;
+        const aiStatusElement = document.getElementById('aiDetectionStatusBadge');
+        if (aiStatusElement) {
+            aiStatusElement.textContent = aiDetectionEnabled ? 'ON' : 'OFF';
+            aiStatusElement.className = `badge ${aiDetectionEnabled ? 'bg-success' : 'bg-danger'} rounded-pill`;
+        }        // Update servo status
         const servoAngle = data.state?.servo_angle || data.servo_angle || 0;
         document.getElementById('servoStatus').textContent = `${servoAngle}°`;
         this.updateServoUI(servoAngle);
@@ -542,8 +557,8 @@ class NautilusController {
                 break;
             case 'z':
                 e.preventDefault();
-                if (this.depthController) {
-                    this.depthController.toggleDepth();
+                if (this.aiDetectionController) {
+                    this.aiDetectionController.toggleDetection();
                 }
                 break;
             case 'v':
@@ -656,7 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('WASD or Arrow Keys: Move (when in button mode)');
     console.log('Space: Stop');
     console.log('C: Toggle Camera');
-    console.log('D: Toggle Depth');
+    console.log('Z: Toggle AI Detection');
     console.log('V: Toggle Servo');
     console.log('J: Toggle Joystick/Button Controls');
     console.log('F: Toggle Fullscreen');

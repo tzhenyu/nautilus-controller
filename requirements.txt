@@ -10,3 +10,6 @@ matplotlib
 opencv-python
 torch
 torchvision
+ultralytics
+pillow
+numpy

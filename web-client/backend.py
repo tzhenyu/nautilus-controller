@@ -11,18 +11,16 @@ from time import sleep
 from gps3 import gps3
 import threading
 
-# Import depth service
+# Removed depth service - no longer needed
+
+# Import AI detection service
 try:
-    import sys
-    import os
-    # Add parent directory to path to import depth_service
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from depth_service import create_depth_api_routes
-    DEPTH_SERVICE_AVAILABLE = True
-    print("[INFO] Depth Anything V2 service available")
+    from ai_detection_service import ai_detection_service
+    AI_DETECTION_AVAILABLE = True
+    print("[INFO] AI Detection service available")
 except ImportError as e:
-    print(f"[WARNING] Depth service not available: {e}")
-    DEPTH_SERVICE_AVAILABLE = False
+    print(f"[WARNING] AI Detection service not available: {e}")
+    AI_DETECTION_AVAILABLE = False
 
 SERVO_MOTOR_GPIO = 17
 
@@ -59,14 +57,7 @@ app.mount("/static", StaticFiles(directory="."), name="static")
 app.mount("/images", StaticFiles(directory="../images"), name="images")
 templates = Jinja2Templates(directory="static")
 
-# Add depth estimation routes if available
-if DEPTH_SERVICE_AVAILABLE:
-    try:
-        create_depth_api_routes(app)
-        print("[INFO] Depth estimation endpoints added successfully")
-    except Exception as e:
-        print(f"[ERROR] Failed to add depth estimation endpoints: {e}")
-        DEPTH_SERVICE_AVAILABLE = False
+# Depth service removed
 
 try:
     from gpiozero import AngularServo
@@ -83,6 +74,7 @@ robot_state = {
     "motor_speed": 50,
     "servo_angle": 0,
     "camera_enabled": False,
+    "ai_detection_enabled": False,
     "is_moving": False,
     "current_direction": "stopped",
     "gps_status": "initializing"
@@ -293,7 +285,138 @@ async def get_status():
     robot_state["battery"] = random.randint(70, 100)
     robot_state["temperature"] = round(random.uniform(20, 100), 1)
     
+    # Add AI detection status if available
+    if AI_DETECTION_AVAILABLE:
+        ai_status = ai_detection_service.get_status()
+        robot_state["ai_detection_status"] = ai_status
+    
     return JSONResponse(robot_state)
+
+# AI Detection endpoints
+@app.post("/api/ai-detection/toggle")
+async def toggle_ai_detection():
+    """Toggle AI detection on/off"""
+    if not AI_DETECTION_AVAILABLE:
+        return JSONResponse({
+            "status": "error",
+            "message": "AI Detection service not available"
+        }, status_code=503)
+    
+    try:
+        if robot_state["ai_detection_enabled"]:
+            ai_detection_service.disable_detection()
+            robot_state["ai_detection_enabled"] = False
+            message = "AI detection disabled"
+        else:
+            success = ai_detection_service.enable_detection()
+            if success:
+                robot_state["ai_detection_enabled"] = True
+                message = "AI detection enabled"
+            else:
+                return JSONResponse({
+                    "status": "error",
+                    "message": "Failed to enable AI detection"
+                }, status_code=500)
+        
+        return JSONResponse({
+            "status": "success",
+            "message": message,
+            "ai_detection_enabled": robot_state["ai_detection_enabled"],
+            "state": robot_state
+        })
+    except Exception as e:
+        return JSONResponse({
+            "status": "error",
+            "message": f"Error toggling AI detection: {str(e)}"
+        }, status_code=500)
+
+@app.post("/api/ai-detection/process-frame")
+async def process_frame(request: Request):
+    """Process a frame for AI detection"""
+    if not AI_DETECTION_AVAILABLE:
+        return JSONResponse({
+            "status": "error",
+            "message": "AI Detection service not available"
+        }, status_code=503)
+    
+    if not robot_state["ai_detection_enabled"]:
+        return JSONResponse({
+            "status": "error",
+            "message": "AI detection is not enabled"
+        }, status_code=400)
+    
+    try:
+        data = await request.json()
+        base64_frame = data.get("frame")
+        
+        if not base64_frame:
+            return JSONResponse({
+                "status": "error",
+                "message": "No frame data provided"
+            }, status_code=400)
+        
+        # Process the frame
+        annotated_frame, detections = ai_detection_service.process_base64_frame(base64_frame)
+        
+        # Generate detection summary
+        detection_summary = ai_detection_service.get_detection_summary(detections)
+        
+        return JSONResponse({
+            "status": "success",
+            "annotated_frame": annotated_frame,
+            "detections": detections,
+            "summary": detection_summary,
+            "ai_status": ai_detection_service.get_status()
+        })
+        
+    except Exception as e:
+        return JSONResponse({
+            "status": "error",
+            "message": f"Error processing frame: {str(e)}"
+        }, status_code=500)
+
+@app.post("/api/ai-detection/set-confidence")
+async def set_confidence_threshold(request: Request):
+    """Set the confidence threshold for AI detection"""
+    if not AI_DETECTION_AVAILABLE:
+        return JSONResponse({
+            "status": "error",
+            "message": "AI Detection service not available"
+        }, status_code=503)
+    
+    try:
+        data = await request.json()
+        threshold = float(data.get("threshold", 0.5))
+        
+        ai_detection_service.set_confidence_threshold(threshold)
+        
+        return JSONResponse({
+            "status": "success",
+            "message": f"Confidence threshold set to {threshold}",
+            "threshold": threshold,
+            "ai_status": ai_detection_service.get_status()
+        })
+        
+    except Exception as e:
+        return JSONResponse({
+            "status": "error",
+            "message": f"Error setting confidence threshold: {str(e)}"
+        }, status_code=500)
+
+@app.get("/api/ai-detection/status")
+async def get_ai_detection_status():
+    """Get AI detection service status"""
+    if not AI_DETECTION_AVAILABLE:
+        return JSONResponse({
+            "status": "error",
+            "message": "AI Detection service not available"
+        }, status_code=503)
+    
+    return JSONResponse({
+        "status": "success",
+        "ai_status": ai_detection_service.get_status(),
+        "enabled": robot_state["ai_detection_enabled"]
+    })
 
 if __name__ == "__main__":
     import uvicorn
