@@ -13,6 +13,7 @@ class NautilusController {
         this.cameraController = null;
         this.joystickController = null;
         this.aiDetectionController = null;
+        this.depthCameraController = null;
         this.init();
     }
 
@@ -21,6 +22,7 @@ class NautilusController {
         this.initializeTheme();
         this.initializeMap();
         this.initializeCameraController();
+        this.initializeDepthCameraController();
         this.initializeAIDetectionController();
         this.initializeJoystickController();
         this.startStatusUpdates();
@@ -335,6 +337,16 @@ class NautilusController {
         }
     }
 
+    initializeDepthCameraController() {
+        // Initialize Depth Camera Controller
+        if (typeof DepthCameraController !== 'undefined') {
+            this.depthCameraController = new DepthCameraController();
+            console.log('Depth Camera controller initialized');
+        } else {
+            console.warn('DepthCameraController not available');
+        }
+    }
+
     initializeAIDetectionController() {
         // Initialize AI Detection Controller for object detection
         if (typeof AIDetectionController !== 'undefined') {
@@ -575,6 +587,12 @@ class NautilusController {
                     this.joystickController.toggleControlMode();
                 }
                 break;
+            case 'x':
+                e.preventDefault();
+                if (this.depthCameraController) {
+                    this.depthCameraController.toggleDepthCamera();
+                }
+                break;
         }
     }
 
@@ -613,7 +631,20 @@ class NautilusController {
     startStatusUpdates() {
         this.updateInterval = setInterval(() => {
             this.updateStatus();
+            this.checkDepthCameraButton();
         }, 1000); // Update every second
+    }
+    
+    checkDepthCameraButton() {
+        const cameraVideo = document.getElementById('cameraVideo');
+        const depthBtn = document.getElementById('depthCameraToggle');
+        
+        if (cameraVideo && depthBtn && this.cameraController && this.cameraController.isActive) {
+            if (depthBtn.style.display === 'none' || depthBtn.style.display === '') {
+                depthBtn.style.display = 'inline-block';
+                console.log('Depth camera button auto-shown by status check');
+            }
+        }
     }
 
     showConnectionStatus(connected) {
@@ -675,6 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('V: Toggle Servo');
     console.log('J: Toggle Joystick/Button Controls');
     console.log('F: Toggle Fullscreen');
+    console.log('X: Toggle Depth Camera');
 });
 
 // Handle page visibility changes

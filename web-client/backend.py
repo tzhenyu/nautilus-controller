@@ -22,6 +22,15 @@ except ImportError as e:
     print(f"[WARNING] AI Detection service not available: {e}")
     AI_DETECTION_AVAILABLE = False
 
+# Import depth camera service
+try:
+    from depth_camera_service import depth_camera_service
+    DEPTH_CAMERA_AVAILABLE = True
+    print("[INFO] Depth Camera service available")
+except ImportError as e:
+    print(f"[WARNING] Depth Camera service not available: {e}")
+    DEPTH_CAMERA_AVAILABLE = False
+
 SERVO_MOTOR_GPIO = 17
 
 # Mock servo class for development on non-Raspberry Pi systems
@@ -75,6 +84,7 @@ robot_state = {
     "servo_angle": 0,
     "camera_enabled": False,
     "ai_detection_enabled": False,
+    "depth_camera_enabled": False,
     "is_moving": False,
     "current_direction": "stopped",
     "gps_status": "initializing"
@@ -416,6 +426,113 @@ async def get_ai_detection_status():
         "status": "success",
         "ai_status": ai_detection_service.get_status(),
         "enabled": robot_state["ai_detection_enabled"]
+    })
+
+# Depth Camera endpoints
+@app.post("/api/depth-camera/toggle")
+async def toggle_depth_camera():
+    """Toggle depth camera on/off"""
+    if not DEPTH_CAMERA_AVAILABLE:
+        return JSONResponse({
+            "status": "error",
+            "message": "Depth Camera service not available"
+        }, status_code=503)
+    
+    try:
+        if robot_state["depth_camera_enabled"]:
+            result = depth_camera_service.stop_depth_processing()
+            robot_state["depth_camera_enabled"] = False
+        else:
+            result = depth_camera_service.start_depth_processing()
+            if result["status"] == "success":
+                robot_state["depth_camera_enabled"] = True
+        
+        return JSONResponse({
+            "status": result["status"],
+            "message": result["message"],
+            "depth_camera_enabled": robot_state["depth_camera_enabled"],
+            "state": robot_state
+        })
+        
+    except Exception as e:
+        return JSONResponse({
+            "status": "error",
+            "message": f"Error toggling depth camera: {str(e)}"
+        }, status_code=500)
+
+@app.post("/api/depth-camera/process-frame")
+async def process_depth_frame(request: Request):
+    """Process a frame for depth estimation"""
+    if not DEPTH_CAMERA_AVAILABLE:
+        return JSONResponse({
+            "status": "error",
+            "message": "Depth Camera service not available"
+        }, status_code=503)
+    
+    if not robot_state["depth_camera_enabled"]:
+        return JSONResponse({
+            "status": "error",
+            "message": "Depth camera is not enabled"
+        }, status_code=400)
+    
+    try:
+        data = await request.json()
+        base64_frame = data.get("frame")
+        
+        if not base64_frame:
+            return JSONResponse({
+                "status": "error",
+                "message": "No frame data provided"
+            }, status_code=400)
+        
+        # Process the frame for depth estimation
+        result = depth_camera_service.process_frame(base64_frame)
+        
+        return JSONResponse(result)
+        
+    except Exception as e:
+        return JSONResponse({
+            "status": "error",
+            "message": f"Error processing depth frame: {str(e)}"
+        }, status_code=500)
+
+@app.post("/api/depth-camera/change-colormap")
+async def change_depth_colormap():
+    """Change depth visualization colormap"""
+    if not DEPTH_CAMERA_AVAILABLE:
+        return JSONResponse({
+            "status": "error",
+            "message": "Depth Camera service not available"
+        }, status_code=503)
+    
+    try:
+        result = depth_camera_service.change_colormap()
+        return JSONResponse(result)
+        
+    except Exception as e:
+        return JSONResponse({
+            "status": "error",
+            "message": f"Error changing colormap: {str(e)}"
+        }, status_code=500)
+
+@app.get("/api/depth-camera/status")
+async def get_depth_camera_status():
+    """Get depth camera service status"""
+    if not DEPTH_CAMERA_AVAILABLE:
+        return JSONResponse({
+            "status": "error",
+            "message": "Depth Camera service not available",
+            "depth_status": {
+                "available": False,
+                "colormap": "Plasma"
+            },
+            "enabled": False
+        })
+    
+    return JSONResponse({
+        "status": "success",
+        "depth_status": depth_camera_service.get_status(),
+        "enabled": robot_state["depth_camera_enabled"]
     })
 
 if __name__ == "__main__":

@@ -115,6 +115,7 @@ class CameraController {
             this.updateToggleButton('active', 'Stop Camera');
             this.showFullscreenButton();
             this.showAIDetectionButton();
+            this.showDepthCameraButton();
             
             this.isActive = true;
             console.log('Camera started successfully');
@@ -124,7 +125,7 @@ class CameraController {
 
         } catch (error) {
             console.error('Error starting camera:', error);
-            this.handleCameraError(error);
+            await this.handleCameraError(error);
         }
     }
 
@@ -153,11 +154,24 @@ class CameraController {
                 this.exitFullscreen();
             }
 
+            // Stop AI detection if active
+            if (window.controller && window.controller.aiDetectionController && window.controller.aiDetectionController.isEnabled) {
+                console.log('Auto-stopping AI detection...');
+                await window.controller.aiDetectionController.stopDetection();
+            }
+
+            // Stop depth camera if active
+            if (window.controller && window.controller.depthCameraController && window.controller.depthCameraController.isEnabled) {
+                console.log('Auto-stopping depth camera...');
+                await window.controller.depthCameraController.stopDepthCamera();
+            }
+
             // Update UI
             this.showPlaceholder();
             this.updateToggleButton('inactive', 'Start Camera');
             this.hideFullscreenButton();
             this.hideAIDetectionButton();
+            this.hideDepthCameraButton();
             
             this.isActive = false;
             console.log('Camera stopped successfully');
@@ -405,7 +419,44 @@ class CameraController {
         }
     }
 
-    handleCameraError(error) {
+    showDepthCameraButton() {
+        const depthBtn = document.getElementById('depthCameraToggle');
+        if (depthBtn) {
+            depthBtn.style.display = 'inline-block';
+            console.log('Depth camera button shown');
+        } else {
+            console.error('Depth camera button not found!');
+        }
+        // Add camera-active class to container for CSS styling
+        const container = document.getElementById('cameraContainer');
+        if (container) {
+            container.classList.add('camera-active');
+        }
+    }
+
+    hideDepthCameraButton() {
+        const depthBtn = document.getElementById('depthCameraToggle');
+        if (depthBtn) {
+            depthBtn.style.display = 'none';
+        }
+        // Remove camera-active class from container
+        const container = document.getElementById('cameraContainer');
+        if (container) {
+            container.classList.remove('camera-active');
+        }
+    }
+
+    async handleCameraError(error) {
+        // Stop AI detection and depth camera if active
+        if (window.controller && window.controller.aiDetectionController && window.controller.aiDetectionController.isEnabled) {
+            console.log('Auto-stopping AI detection due to camera error...');
+            await window.controller.aiDetectionController.stopDetection();
+        }
+
+        if (window.controller && window.controller.depthCameraController && window.controller.depthCameraController.isEnabled) {
+            console.log('Auto-stopping depth camera due to camera error...');
+            await window.controller.depthCameraController.stopDepthCamera();
+        }
 
         let errorMessage = 'Unable to access camera';
         
@@ -427,6 +478,10 @@ class CameraController {
         this.updateToggleButton('inactive', 'Start Camera');
         this.updateCameraStatus(false);
         this.isActive = false;
+
+        // Hide AI detection and depth camera buttons
+        this.hideAIDetectionButton();
+        this.hideDepthCameraButton();
     }
 
     updateCameraStatus(enabled) {
@@ -450,7 +505,16 @@ class CameraController {
         }
     }
 
-    destroy() {
+    async destroy() {
+        // Stop AI detection and depth camera if active
+        if (window.controller && window.controller.aiDetectionController && window.controller.aiDetectionController.isEnabled) {
+            await window.controller.aiDetectionController.stopDetection();
+        }
+
+        if (window.controller && window.controller.depthCameraController && window.controller.depthCameraController.isEnabled) {
+            await window.controller.depthCameraController.stopDepthCamera();
+        }
+
         // Clean up resources
         if (this.stream) {
             this.stream.getTracks().forEach(track => track.stop());

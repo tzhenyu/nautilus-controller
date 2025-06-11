@@ -4,9 +4,15 @@ Nautilus Controller is a web client for Raspberry Pi to be able to be controlled
 ## Features
 
 ### Movement Controls
-- **Arrow Buttons**: Forward, Backward, Left, Right movement
-- **Stop Button**: Emergency stop
-- **Keyboard Controls**: WASD or Arrow Keys for movement, Space to stop
+- **Joystick Control** (Default): Mobile-friendly joystick with 360° movement
+  - Supports diagonal movement (8 directions)
+  - Touch and mouse compatible
+  - Visual feedback with direction indicators
+  - Intensity-based movement (distance from center affects speed)
+- **Traditional Buttons**: Forward, Backward, Left, Right movement buttons
+- **Control Mode Toggle**: Switch between joystick and button controls
+- **Emergency Stop**: Large, accessible emergency stop button
+- **Keyboard Controls**: WASD or Arrow Keys for movement (in button mode), Space to stop
 
 ### Camera Control
 - **Toggle Camera**: Turn camera feed on/off
@@ -27,23 +33,28 @@ Nautilus Controller is a web client for Raspberry Pi to be able to be controlled
 - **Connection Status**: Shows if connected to the robot
 
 ### Additional Features
+- **Dual Control Modes**: Joystick (mobile-optimized) and traditional buttons
+- **Enhanced Mobile Support**: Optimized joystick controls for touch devices
+- **Diagonal Movement**: 8-directional movement with intensity control
 - **Fullscreen Mode**: Press 'F' or click the fullscreen button
-- **Mobile Responsive**: Optimized for mobile devices
+- **Mobile Responsive**: Optimized for mobile devices with adaptive layouts
 - **Touch Controls**: Full touch support for mobile platforms
 - **Real-time Updates**: Status updates every second
+- **Dark/Light Theme**: Automatic theme switching with manual toggle
 
 ## Keyboard Shortcuts
 
 | Key | Action |
 |-----|--------|
-| W / ↑ | Move Forward |
-| S / ↓ | Move Backward |
-| A / ← | Move Left |
-| D / → | Move Right |
-| Space | Stop |
+| W / ↑ | Move Forward (button mode only) |
+| S / ↓ | Move Backward (button mode only) |
+| A / ← | Move Left (button mode only) |
+| D / → | Move Right (button mode only) |
+| J | Toggle Joystick/Button Controls |
 | C | Toggle Camera |
 | V | Toggle Servo |
 | F | Toggle Fullscreen |
+| Z | Toggle AI Detection |
 
 ## Architecture Overview
 ```mermaid
@@ -87,11 +98,17 @@ sudo python3 main.py
 ```
 or (Windows)
 
-```
+```bash
 cd web-client; python -m uvicorn backend:app --host 0.0.0.0 --port 8000 --reload
 ```
+or (Windows)
 
-2. Open your web browser and navigate to:
+```bash
+cd web-client; python backend.py
+```
+2. Download the model: [Depth Anything](https://huggingface.co/depth-anything/Depth-Anything-V2-Base/resolve/main/depth_anything_v2_vitb.pth?download=true)
+
+3. Open your web browser and navigate to:
 ```
 http://localhost:8000
 ```
@@ -99,6 +116,16 @@ http://localhost:8000
 For mobile devices on the same network, use your computer's IP address:
 ```
 http://YOUR_IP_ADDRESS:8000
+```
+
+## Testing Functionality
+
+```bash
+#Depth model Window
+python depth_camera_comparison.py
+
+#AI Detector Window
+python simple_webcam_detector.py
 ```
 
 ## API Endpoints

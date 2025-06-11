@@ -1895,6 +1895,12 @@ body {
     z-index: 10;
 }
 
+/* AI Detection only covers left 50% when depth camera is active */
+.depth-camera-active .ai-detection-overlay {
+    width: 50%;
+    right: auto;
+}
+
 .detection-canvas {
     position: absolute;
     top: 0;
@@ -1903,6 +1909,11 @@ body {
     height: 100%;
     pointer-events: none;
     z-index: 11;
+}
+
+/* AI Detection canvas stays within left area when depth camera is active */
+.depth-camera-active .detection-canvas {
+    width: 100%;
 }
 
 .detection-info-panel {
@@ -2096,4 +2107,211 @@ body {
 @keyframes aiScan {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
+}
+
+/* Depth Camera Styles */
+.camera-container-enhanced.depth-camera-active {
+    display: flex;
+    gap: 0;
+    height: 450px;
+    position: relative;
+    align-items: stretch;
+}
+
+.camera-container-enhanced.depth-camera-active .camera-feed-enhanced {
+    width: 50%;
+    flex: 0 0 50%;
+    position: relative;
+    border-right: 2px solid var(--border-color);
+    height: 450px;
+}
+
+.camera-container-enhanced.depth-camera-active .camera-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.depth-camera-canvas {
+    width: 50%;
+    height: 450px;
+    flex: 0 0 50%;
+    position: relative;
+    border-left: 2px solid var(--border-color);
+    background-color: #000;
+    display: none;
+    object-fit: cover;
+    object-position: center;
+}
+
+.depth-info-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.depth-info-panel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.depth-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.depth-colormap,
+.depth-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.depth-colormap span,
+.depth-status span {
+    margin-left: 8px;
+    font-weight: 600;
+}
+
+[data-theme="dark"] .depth-info-panel {
+    background: rgba(26, 26, 26, 0.9);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Depth Camera Button Styles */
+#depthCameraToggle {
+    transition: all 0.2s ease;
+}
+
+#depthCameraToggle:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#depthCameraToggle.btn-success {
+    background: linear-gradient(135deg, #198754, #20a65a);
+    border: none;
+}
+
+#depthCameraToggle.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #e55563);
+    border: none;
+}
+
+#depthCameraToggle.btn-warning {
+    background: linear-gradient(135deg, #ffc107, #ffcd39);
+    border: none;
+    color: #000;
+}
+
+#changeColormap {
+    transition: all 0.2s ease;
+}
+
+#changeColormap:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#changeColormap.btn-info {
+    background: linear-gradient(135deg, #0dcaf0, #31d2f2);
+    border: none;
+}
+
+/* Depth Camera Status Indicator */
+#depthCameraStatus.bg-primary {
+    background: linear-gradient(135deg, #0d6efd, #3d8bfd) !important;
+    animation: depthPulse 2s infinite;
+}
+
+@keyframes depthPulse {
+    0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0);
+        transform: scale(1.05);
+    }
+}
+
+/* Mobile Responsive Depth Camera */
+@media (max-width: 768px) {
+    .camera-container-enhanced.depth-camera-active {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .camera-container-enhanced.depth-camera-active .camera-feed-enhanced {
+        width: 100%;
+        height: 240px;
+        border-right: none;
+        border-bottom: 2px solid var(--border-color);
+        flex: none;
+    }
+    
+    .depth-camera-canvas {
+        position: relative;
+        width: 100%;
+        height: 240px;
+        border-left: none;
+        border-bottom: 2px solid var(--border-color);
+        flex: none;
+    }
+    
+    .depth-info-overlay {
+        width: 100%;
+        height: 240px;
+        position: relative;
+    }
+    
+    .depth-info-panel {
+        top: 10px;
+        left: 10px;
+        right: auto;
+    }
+    
+    .camera-controls {
+        justify-content: center;
+        gap: 6px;
+    }
+    
+    .camera-controls .btn {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+    }
+    
+    .camera-controls .btn span {
+        display: none;
+    }
+    
+    .camera-controls .btn i {
+        margin: 0;
+    }
+    
+    /* AI Detection adjustments for mobile */
+    .depth-camera-active .ai-detection-overlay {
+        width: 100%;
+        height: 240px;
+    }
+}
+
+/* Depth camera button visibility is controlled by JavaScript in camera-controller.js
+   Do not override with CSS - let the camera controller handle show/hide logic */
+
+/* Show colormap button when depth camera is active */
+.depth-camera-active #changeColormap {
+    display: inline-block !important;
 }
