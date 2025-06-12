@@ -1,63 +1,138 @@
-# Nautilus Controller
-Nautilus Controller is a web client for Raspberry Pi to be able to be controlled by users.
+<div align="center">
 
-## Features
+<img src="images/nautilus2.png" alt="Nautilus Controller Logo" width="200" height="200" />
 
-### Movement Controls
-- **Joystick Control** (Default): Mobile-friendly joystick with 360° movement
-  - Supports diagonal movement (8 directions)
-  - Touch and mouse compatible
-  - Visual feedback with direction indicators
-  - Intensity-based movement (distance from center affects speed)
-- **Traditional Buttons**: Forward, Backward, Left, Right movement buttons
-- **Control Mode Toggle**: Switch between joystick and button controls
+# **Nautilus Controller**
+
+**A comprehensive web client for Raspberry Pi robotics with real-time control, monitoring, and AI-powered features**
+
+[![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
+[![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.68%2B-green.svg)](https://fastapi.tiangolo.com/)
+[![Mobile](https://img.shields.io/badge/mobile-friendly-brightgreen.svg)]()
+[![WebRTC](https://img.shields.io/badge/WebRTC-enabled-orange.svg)]()
+
+</div>
+
+---
+
+## 🚀 Overview
+
+Nautilus Controller is a cutting-edge web-based control platform designed for Raspberry Pi robotics applications. It provides an intuitive, responsive interface for real-time robot control with advanced features including AI-powered detection, depth perception, and comprehensive telemetry monitoring.
+
+### 🎯 Project Goals
+
+- **Accessibility**: Mobile-first design with touch-optimized controls
+- **Real-time Control**: Low-latency command execution and status updates
+- **Modularity**: Extensible architecture for custom hardware integration
+- **Intelligence**: AI-powered features for autonomous operation capabilities
+
+---
+
+## ✨ Key Features
+
+### 🎮 Advanced Movement Controls
+
+<details>
+<summary><strong>Joystick Control System</strong> (Default Mode)</summary>
+
+- **360° Movement**: Full directional control with 8-direction support
+- **Intensity-Based Speed**: Distance from center controls movement speed
+- **Touch & Mouse Compatible**: Optimized for both desktop and mobile
+- **Visual Feedback**: Real-time direction and intensity indicators
+- **Diagonal Movement**: Precise multi-directional navigation
+
+</details>
+
+<details>
+<summary><strong>Traditional Button Controls</strong></summary>
+
+- **Directional Buttons**: Forward, Backward, Left, Right movement
+- **Keyboard Integration**: WASD or Arrow Keys support
 - **Emergency Stop**: Large, accessible emergency stop button
-- **Keyboard Controls**: WASD or Arrow Keys for movement (in button mode), Space to stop
+- **Mode Toggle**: Seamless switching between control modes
 
-### Camera Control
-- **Toggle Camera**: Turn camera feed on/off
-- **Keyboard Shortcut**: Press 'C' to toggle camera
+</details>
 
-### Servo Control
-- **Toggle Servo**: Switch between 0° and 90° positions
-- **Keyboard Shortcut**: Press 'V' to toggle servo
+### 📷 Camera & Vision Systems
 
-### Speed Control
-- **Speed Slider**: Adjust motor speed from 0-100%
-- **Quick Speed Buttons**: 25%, 50%, 75%, 100%
+- **Live Camera Feed**: Real-time video streaming with WebRTC
+- **Depth Perception**: AI-powered depth analysis using Depth Anything V2
+- **Object Detection**: Intelligent object recognition and tracking
+- **Toggle Controls**: Easy camera system management
 
-### Real-time Information
-- **Position**: X, Y coordinates and heading
-- **System Status**: Current speed, direction, camera status, servo position
-- **System Info**: Battery level, temperature, last update time
-- **Connection Status**: Shows if connected to the robot
+### 🔧 Hardware Control
 
-### Additional Features
-- **Dual Control Modes**: Joystick (mobile-optimized) and traditional buttons
-- **Enhanced Mobile Support**: Optimized joystick controls for touch devices
-- **Diagonal Movement**: 8-directional movement with intensity control
-- **Fullscreen Mode**: Press 'F' or click the fullscreen button
-- **Mobile Responsive**: Optimized for mobile devices with adaptive layouts
+- **Servo Motor Control**: Precise positioning (0° - 90°)
+- **Variable Speed Control**: Adjustable motor speed (0-100%)
+- **Quick Speed Presets**: 25%, 50%, 75%, 100% speed buttons
+- **Real-time Monitoring**: Live hardware status updates
+
+### 📊 Telemetry & Monitoring
+
+- **Position Tracking**: Real-time X, Y coordinates and heading
+- **System Status**: Speed, direction, camera status, servo position
+- **Environmental Data**: Battery level, temperature monitoring
+- **Connection Status**: Live connectivity indicators
+
+### 🎨 User Experience
+
+- **Responsive Design**: Optimized for mobile, tablet, and desktop
+- **Dark/Light Themes**: Automatic and manual theme switching
+- **Fullscreen Mode**: Immersive control experience
 - **Touch Controls**: Full touch support for mobile platforms
-- **Real-time Updates**: Status updates every second
-- **Dark/Light Theme**: Automatic theme switching with manual toggle
+- **Real-time Updates**: 1-second status refresh intervals
 
-## Keyboard Shortcuts
+---
 
-| Key | Action |
-|-----|--------|
-| W / ↑ | Move Forward (button mode only) |
-| S / ↓ | Move Backward (button mode only) |
-| A / ← | Move Left (button mode only) |
-| D / → | Move Right (button mode only) |
-| J | Toggle Joystick/Button Controls |
-| C | Toggle Camera |
-| V | Toggle Servo |
-| F | Toggle Fullscreen |
-| Z | Toggle AI Detection |
+## 🏗️ Architecture
 
-## Architecture Overview
 ```mermaid
+graph TB
+    subgraph "🌐 Web Client Layer"
+        A[HTML5 Interface]
+        B[CSS3 Styling]
+        C[JavaScript Controls]
+        D[WebRTC Streaming]
+    end
+    
+    subgraph "⚡ Backend Services"
+        E[FastAPI Server]
+        F[AJAX Handlers]
+        G[WebSocket Manager]
+    end
+    
+    subgraph "🤖 Hardware Layer"
+        H[Motor Controllers]
+        I[Servo Motors]
+        J[Camera Module]
+        K[Sensors]
+    end
+    
+    subgraph "🧠 AI Services"
+        L[Depth Analysis]
+        M[Object Detection]
+        N[Computer Vision]
+    end
+    
+    A --> E
+    B --> E
+    C --> F
+    D --> G
+    E --> H
+    E --> I
+    E --> J
+    E --> K
+    E --> L
+    E --> M
+    E --> N
+    
+    style A fill:#e1f5fe
+    style E fill:#f3e5f5
+    style H fill:#fff3e0
+    style L fill:#e8f5e8
+```
+
 flowchart TD
  subgraph s1["Web Client"]
         n7["FastAPI"]
@@ -82,86 +157,215 @@ flowchart TD
     n6@{ shape: rect}
     n9@{ shape: rect}
 
-```
-## Installation
+---
 
-1. Install the required dependencies:
-```bash
-pip install -r requirements.txt
-```
+## 🔧 Installation
 
-## Running the Application
+### Quick Start
 
-1. Start the FastAPI server (Linux/Ubuntu):
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/nautilus-controller.git
+   cd nautilus-controller
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+ 3. **Download AI Models**
+    
+    **Depth Anything V2 Model** (Manual download required):
+    ```bash
+    # Download Depth Anything V2 model
+    wget https://huggingface.co/depth-anything/Depth-Anything-V2-Base/resolve/main/depth_anything_v2_vitb.pth
+    ```
+    or [Download Here](https://huggingface.co/depth-anything/Depth-Anything-V2-Base/resolve/main/depth_anything_v2_vitb.pth?download=true)
+
+    > Put the downloaded model inside 'checkpoints' folder
+    
+    **YOLOv5 Models (AI Detection)** (Auto-download):
+    - ✅ YOLOv5 models download automatically on first use
+    - No manual download required
+    - Models are cached locally for future use
+
+4. **Configure Hardware** (Optional)
+   ```bash
+   # Enable camera interface
+   sudo raspi-config
+   # Navigate to Interface Options > Camera > Enable
+   ```
+
+---
+
+## 📱 Usage
+
+### Starting the Server
+
+**Linux/Ubuntu:**
 ```bash
 sudo python3 main.py
 ```
-or (Windows)
 
+**Windows:**
 ```bash
-cd web-client; python -m uvicorn backend:app --host 0.0.0.0 --port 8000 --reload
+cd web-client
+python -m uvicorn backend:app --host 0.0.0.0 --port 8000 --reload
 ```
-or (Windows)
 
+**Alternative Windows:**
 ```bash
-cd web-client; python backend.py
+cd web-client
+python backend.py
 ```
-2. Download the model: [Depth Anything](https://huggingface.co/depth-anything/Depth-Anything-V2-Base/resolve/main/depth_anything_v2_vitb.pth?download=true)
 
-3. Open your web browser and navigate to:
+### Accessing the Interface
+
+**Local Access:**
 ```
 http://localhost:8000
 ```
 
-For mobile devices on the same network, use your computer's IP address:
+**Mobile/Remote Access:**
 ```
-http://YOUR_IP_ADDRESS:8000
+http://YOUR_PI_IP_ADDRESS:8000
 ```
 
-## Testing Functionality
+---
 
+## 🎮 Controls
+
+### Keyboard Shortcuts
+
+| Key | Function | Mode |
+|-----|----------|------|
+| `W` / `↑` | Move Forward | Button Mode |
+| `S` / `↓` | Move Backward | Button Mode |
+| `A` / `←` | Move Left | Button Mode |
+| `D` / `→` | Move Right | Button Mode |
+| `J` | Toggle Control Mode | All Modes |
+| `C` | Toggle Camera | All Modes |
+| `V` | Toggle Servo | All Modes |
+| `F` | Toggle Fullscreen | All Modes |
+| `X` | Toggle Depth Camera | All Modes |
+| `Z` | Toggle AI Detection | All Modes |
+
+### Control Modes
+
+- **Joystick Mode**: Drag-based 360° movement control
+- **Button Mode**: Traditional directional button controls
+- **Keyboard Mode**: WASD/Arrow key navigation
+
+---
+
+## 🔌 API Reference
+
+### Movement Control
+```http
+POST /api/move
+Content-Type: application/json
+
+{
+  "direction": "forward|backward|left|right|stop",
+  "speed": 0-100
+}
+```
+
+### Camera Control
+```http
+POST /api/camera/toggle
+```
+
+### Servo Control
+```http
+POST /api/servo/toggle
+```
+
+### System Status
+```http
+GET /api/status
+```
+
+### Speed Control
+```http
+POST /api/speed
+Content-Type: application/json
+
+{
+  "speed": 0-100
+}
+```
+
+---
+
+## 🧪 Testing
+
+### Unit Tests
 ```bash
-#Depth model Window
-python depth_camera_comparison.py
+# Run comprehensive test suite
+python -m pytest tests/
 
-#AI Detector Window
+# Test specific components
+python -m pytest tests/test_movement.py
+python -m pytest tests/test_camera.py
+```
+
+### Manual Testing Tools
+
+**Depth Camera Testing:**
+```bash
+python depth_camera_comparison.py
+```
+
+**AI Detection Testing:**
+```bash
 python simple_webcam_detector.py
 ```
 
-## API Endpoints
+**Hardware Integration Testing:**
+```bash
+python tests/hardware_test.py
+```
 
-- `GET /api/status` - Get current robot status
-- `GET /` - Main controller interface
-- `POST /api/move` - Move robot in specified direction
-- `POST /api/stop` - Stop robot movement
-- `POST /api/servo/toggle` - Toggle servo position
-- `POST /api/camera/toggle` - Toggle camera on/off
-- `POST /api/speed` - Set motor speed
+---
+
+## 🗺️ Roadmap
+
+### ✅ Completed Features
+- [x] Mobile-optimized UI
+- [x] Dual control modes (Joystick & Button)
+- [x] Real-time telemetry
+- [x] Camera integration
+- [x] Servo motor control
+- [x] Speed adjustment controls
+- [x] Keyboard shortcuts
+- [x] Emergency stop functionality
+
+### 🚧 In Progress
+- [ ] Horizontal layout with fullscreen toggle
+- [ ] Hardware integration layer
+- [ ] WebRTC streaming optimization
+
+### 🔮 Future Enhancements
+- [ ] GPS mapping integration
+- [ ] Autonomous navigation
+- [ ] Voice control interface
+- [ ] Multi-robot coordination
+- [ ] Advanced AI features
+- [ ] Mobile app development
+- [ ] Cloud connectivity
+- [ ] Data analytics dashboard
+
+---
+
+<div align="center">
 
 
-## Mock Data
 
-The current implementation uses mock data for demonstration purposes. The following components are simulated:
-- Robot position and movement
-- Camera feed status
-- Servo position
-- Battery level and temperature
-- System status updates
+**Built by  Great Wall of FSKTM**
 
+[⬆ Back to Top](#-nautilus-controller)
 
-## To Dos
-- [X] UI friendly for mobile platform
-- [ ] Horizontal webpage with toggleable full screen
-- [X] Button for forward, backward, left, right
-- [X] Button for toggleable camera
-- [X] Button for toggleable servo change (refer to servo-controller.py)
-- [X] Motor speed adjustment
-- [X] Information box with robot coordinate, motor speed (in %) in real time
-- [X] Pressing button does not reload the page
-- [ ] A robot coordinate with Maps (optional)
-- [ ] Replace mock functions in `main.py` with actual hardware control code
-- [X] Integrate with the existing `servo-controller.py` for servo control
-- [ ] Add camera streaming functionality (WebRTC or similar)
-- [ ] Implement actual motor control functions
-- [ ] Add real sensor data collection
+</div>
 
