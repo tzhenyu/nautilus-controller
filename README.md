@@ -282,7 +282,6 @@ python simple_webcam_detector.py
 ```bash
 python tests/hardware_test.py
 ```
-
 ---
 
 ## 🗺️ Roadmap
@@ -298,7 +297,6 @@ python tests/hardware_test.py
 - [x] Emergency stop functionality
 
 ### 🚧 In Progress
-- [ ] Horizontal layout with fullscreen toggle
 - [ ] Hardware integration layer
 - [ ] WebRTC streaming optimization
 
@@ -316,11 +314,6 @@ python tests/hardware_test.py
 
 <div align="center">
 
-
-
-**Built by  Great Wall of FSKTM**
-
-[⬆ Back to Top](#-nautilus-controller)
+**Built by 🧱 Great Wall of FSKTM**
 
 </div>
-
