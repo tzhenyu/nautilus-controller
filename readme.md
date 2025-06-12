@@ -9,8 +9,8 @@
 [![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
 [![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.68%2B-green.svg)](https://fastapi.tiangolo.com/)
-[![Mobile](https://img.shields.io/badge/mobile-friendly-brightgreen.svg)]()
-[![WebRTC](https://img.shields.io/badge/WebRTC-enabled-orange.svg)]()
+[![OpenVINO](https://img.shields.io/badge/OpenVINO-enabled-brightgreen.svg)](https://docs.openvino.ai/)
+[![YOLOv5](https://img.shields.io/badge/YOLOv5-detection-orange.svg)](https://github.com/ultralytics/yolov5)
 
 </div>
 
@@ -111,7 +111,6 @@ flowchart TD
     n5@{ shape: rect}
     n6@{ shape: rect}
     n9@{ shape: rect}
-
 ```
 ---
 
@@ -141,7 +140,7 @@ flowchart TD
 
     > Put the downloaded model inside 'checkpoints' folder
     
-    **YOLOv5 Models (AI Detection)** (Auto-download):
+    **YOLOv5 Models (AI Detection)**:
     - ✅ YOLOv5 models download automatically on first use
     - No manual download required
     - Models are cached locally for future use
