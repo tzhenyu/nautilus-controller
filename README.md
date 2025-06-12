@@ -165,14 +165,12 @@ sudo python3 main.py
 
 **Windows:**
 ```bash
-cd web-client
-python -m uvicorn backend:app --host 0.0.0.0 --port 8000 --reload
+cd web-client; python -m uvicorn backend:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 **Alternative Windows:**
 ```bash
-cd web-client
-python backend.py
+cd web-client; python backend.py
 ```
 
 ### Accessing the Interface
