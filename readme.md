@@ -88,51 +88,6 @@ Nautilus Controller is a cutting-edge web-based control platform designed for Ra
 ## 🏗️ Architecture
 
 ```mermaid
-graph TB
-    subgraph "🌐 Web Client Layer"
-        A[HTML5 Interface]
-        B[CSS3 Styling]
-        C[JavaScript Controls]
-        D[WebRTC Streaming]
-    end
-    
-    subgraph "⚡ Backend Services"
-        E[FastAPI Server]
-        F[AJAX Handlers]
-        G[WebSocket Manager]
-    end
-    
-    subgraph "🤖 Hardware Layer"
-        H[Motor Controllers]
-        I[Servo Motors]
-        J[Camera Module]
-        K[Sensors]
-    end
-    
-    subgraph "🧠 AI Services"
-        L[Depth Analysis]
-        M[Object Detection]
-        N[Computer Vision]
-    end
-    
-    A --> E
-    B --> E
-    C --> F
-    D --> G
-    E --> H
-    E --> I
-    E --> J
-    E --> K
-    E --> L
-    E --> M
-    E --> N
-    
-    style A fill:#e1f5fe
-    style E fill:#f3e5f5
-    style H fill:#fff3e0
-    style L fill:#e8f5e8
-```
-
 flowchart TD
  subgraph s1["Web Client"]
         n7["FastAPI"]
@@ -157,6 +112,7 @@ flowchart TD
     n6@{ shape: rect}
     n9@{ shape: rect}
 
+```
 ---
 
 ## 🔧 Installation
