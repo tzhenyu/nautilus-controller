@@ -7,13 +7,13 @@ from typing import Dict, Optional
 
 app = FastAPI()
 
-# Global variable to store the latest GPS data
+# Global variable to store the GPS data for University of Malaya, KK9, Kuala Lumpur, Malaysia
 latest_gps_data = {
-    "lat": "n/a",
-    "lon": "n/a",
-    "alt": "n/a",
-    "speed": "n/a",
-    "track": "n/a",
+    "lat": 3.1209,  # University of Malaya, KK9 latitude
+    "lon": 101.6559,  # University of Malaya, KK9 longitude
+    "alt": 58.0,  # Approximate altitude in meters
+    "speed": 0.0,  # Stationary
+    "track": 0.0,  # No track/heading
     "time": "n/a"
 }
 
@@ -29,44 +29,27 @@ class GPSData(BaseModel):
     time: Optional[str] = None
 
 def poll_gps():
-    """Background thread function to continuously poll GPS data"""
+    """Background thread function to simulate GPS data with hardcoded coordinates for University of Malaya, KK9, Kuala Lumpur, Malaysia"""
     global latest_gps_data, gps_running
     
-    gps_socket = gps3.GPSDSocket()
-    data_stream = gps3.DataStream()
+    # Hardcoded coordinates for University of Malaya, KK9, Kuala Lumpur, Malaysia
+    um_kk9_lat = 3.1209
+    um_kk9_lon = 101.6559
     
     try:
-        gps_socket.connect()
-        gps_socket.watch()
-        
         while gps_running:
-            for new_data in gps_socket:
-                if new_data and gps_running:
-                    data_stream.unpack(new_data)
-                    
-                    # Update the global GPS data if we have valid latitude and longitude
-                    lat = data_stream.TPV['lat']
-                    lon = data_stream.TPV['lon']
-                    
-                    if lat != 'n/a' and lon != 'n/a':
-                        latest_gps_data["lat"] = lat
-                        latest_gps_data["lon"] = lon
-                        latest_gps_data["alt"] = data_stream.TPV['alt']
-                        latest_gps_data["speed"] = data_stream.TPV['speed']
-                        latest_gps_data["track"] = data_stream.TPV['track']
-                        latest_gps_data["time"] = data_stream.TPV['time']
-                    
-                    # Check if we should continue running
-                    if not gps_running:
-                        break
-                    
-                    time.sleep(1)
-                    break
+            # Update the global GPS data with hardcoded coordinates
+            latest_gps_data["lat"] = um_kk9_lat
+            latest_gps_data["lon"] = um_kk9_lon
+            latest_gps_data["alt"] = 58.0  # Approximate altitude in meters
+            latest_gps_data["speed"] = 0.0  # Stationary
+            latest_gps_data["track"] = 0.0  # No track/heading
+            latest_gps_data["time"] = time.strftime("%Y-%m-%dT%H:%M:%S.%fZ", time.gmtime())
+            
+            # Sleep for a second before updating the time again
+            time.sleep(1)
     except Exception as e:
-        print(f"GPS polling error: {e}")
-    finally:
-        # Clean up
-        gps_socket.close()
+        print(f"GPS simulation error: {e}")
 
 # Start the GPS polling thread when the application starts
 @app.on_event("startup")

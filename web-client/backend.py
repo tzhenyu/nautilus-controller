@@ -54,10 +54,11 @@ class MockServo:
 # Mock GPS module for development
 class MockGPS:
     def __init__(self):
-        self.latitude = 40.7128
-        self.longitude = -74.0060
-        self.altitude = 10.0
-        print("Mock GPS initialized")
+        # University of Malaya, KK9, Kuala Lumpur, Malaysia coordinates
+        self.latitude = 3.1209
+        self.longitude = 101.6559
+        self.altitude = 58.0
+        print("Mock GPS initialized with University of Malaya, KK9 coordinates")
 
 app = FastAPI()
 
@@ -77,8 +78,8 @@ except (ImportError, RuntimeError):
 
 # Global state for robot control
 robot_state = {
-    "posX": 0.0,
-    "posY": 0.0,
+    "posX": 101.6559,  # University of Malaya, KK9, Kuala Lumpur, Malaysia (longitude)
+    "posY": 3.1209,    # University of Malaya, KK9, Kuala Lumpur, Malaysia (latitude)
     "heading": 0.0,
     "motor_speed": 50,
     "servo_angle": 0,
@@ -103,74 +104,29 @@ def set_servo_angle(angle):
 def collect_gps_data():
     global gps_socket, data_stream, gps_running
     
-    print("[DEBUG] GPS thread: Starting GPS data collection")
+    print("[DEBUG] GPS thread: Starting GPS data collection with hardcoded coordinates")
+    
+    # University of Malaya, KK9, Kuala Lumpur, Malaysia coordinates
+    um_kk9_lat = 3.1209
+    um_kk9_lon = 101.6559
     
     try:
-        # Initialize connection to GPS
-        print("[DEBUG] GPS thread: Creating socket connection")
-        gps_socket = gps3.GPSDSocket()
-        data_stream = gps3.DataStream()
-        
-        # Check if GPSD is running
-        print("[DEBUG] GPS thread: Connecting to GPSD service")
-        try:
-            gps_socket.connect()
-            print("[DEBUG] GPS thread: Connection successful")
-        except Exception as e:
-            print(f"[ERROR] GPS thread: Failed to connect to GPSD: {str(e)}")
-            robot_state["gps_status"] = f"connection_failed: {str(e)}"
-            return
+        # Main data collection loop with hardcoded coordinates
+        while gps_running:
+            # Use hardcoded coordinates
+            robot_state["posY"] = um_kk9_lat
+            robot_state["posX"] = um_kk9_lon
+            robot_state["gps_status"] = "active"
             
-        gps_socket.watch()
-        robot_state["gps_status"] = "connected"
-        print("[DEBUG] GPS thread: Watch mode set, waiting for data...")
-        
-        # Main data collection loop
-        counter = 0
-        while gps_running:            
-            # Get a single data packet with timeout
-            try:
-                # Use the socket with a timeout
-                next_data = next(gps_socket)
-                if next_data:
-                    data_stream.unpack(next_data)
-                    
-                    
-                    lat = data_stream.TPV.get('lat', 'n/a')
-                    lon = data_stream.TPV.get('lon', 'n/a')
-                    
-                    print(f"[DEBUG] GPS thread: Position data - lat: {lat}, lon: {lon}")
-                    
-                    if lat != 'n/a' and lon != 'n/a':
-                        robot_state["posY"] = float(lat)
-                        robot_state["posX"] = float(lon)
-                        robot_state["gps_status"] = "active"
-                    else:
-                        robot_state["gps_status"] = "no_fix"
-                else:
-                    print("[DEBUG] GPS thread: No data received in this iteration")
-            except StopIteration:
-                print("[DEBUG] GPS thread: End of data stream")
-                break
-            except Exception as e:
-                print(f"[ERROR] GPS thread: Error processing GPS data: {str(e)}")
-            
-            # Sleep between polls
-            sleep(2)
+            # Sleep between updates
+            sleep(1)
             
     except Exception as e:
         print(f"[ERROR] GPS thread: Critical error: {str(e)}")
         robot_state["gps_status"] = f"error: {str(e)}"
     finally:
-        print("[DEBUG] GPS thread: Cleaning up GPS resources")
-        if gps_socket:
-            try:
-                gps_socket.close()
-                print("[DEBUG] GPS thread: GPS socket closed")
-            except Exception as e:
-                print(f"[ERROR] GPS thread: Error closing socket: {str(e)}")
-        robot_state["gps_status"] = "disconnected"
         print("[DEBUG] GPS thread: GPS collection terminated")
+        robot_state["gps_status"] = "disconnected"
 
 # Start GPS data collection thread
 def start_gps():

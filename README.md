@@ -158,19 +158,16 @@ flowchart TD
 
 ### Starting the Server
 
-**Linux/Ubuntu:**
-```bash
-sudo python3 main.py
-```
-
 **Windows:**
 ```bash
-cd web-client; python -m uvicorn backend:app --host 0.0.0.0 --port 8000 --reload
+cd web-client
+python -m uvicorn backend:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 **Alternative Windows:**
 ```bash
-cd web-client; python backend.py
+cd web-client
+python backend.py
 ```
 
 ### Accessing the Interface
@@ -254,16 +251,6 @@ Content-Type: application/json
 
 ## 🧪 Testing
 
-### Unit Tests
-```bash
-# Run comprehensive test suite
-python -m pytest tests/
-
-# Test specific components
-python -m pytest tests/test_movement.py
-python -m pytest tests/test_camera.py
-```
-
 ### Manual Testing Tools
 
 **Depth Camera Testing:**
@@ -280,38 +267,11 @@ python simple_webcam_detector.py
 ```bash
 python tests/hardware_test.py
 ```
----
-
-## 🗺️ Roadmap
-
-### ✅ Completed Features
-- [x] Mobile-optimized UI
-- [x] Dual control modes (Joystick & Button)
-- [x] Real-time telemetry
-- [x] Camera integration
-- [x] Servo motor control
-- [x] Speed adjustment controls
-- [x] Keyboard shortcuts
-- [x] Emergency stop functionality
-
-### 🚧 In Progress
-- [ ] Hardware integration layer
-- [ ] WebRTC streaming optimization
-
-### 🔮 Future Enhancements
-- [ ] GPS mapping integration
-- [ ] Autonomous navigation
-- [ ] Voice control interface
-- [ ] Multi-robot coordination
-- [ ] Advanced AI features
-- [ ] Mobile app development
-- [ ] Cloud connectivity
-- [ ] Data analytics dashboard
 
 ---
 
 <div align="center">
 
-**Built by 🧱 Great Wall of FSKTM**
+**Built by  Great Wall of FSKTM**
 
 </div>

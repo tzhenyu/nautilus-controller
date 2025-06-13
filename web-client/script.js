@@ -1,14 +1,13 @@
 // Nautilus Controller JavaScript
 
 class NautilusController {
-    constructor() {
-        this.isMoving = false;
+    constructor() {        this.isMoving = false;
         this.currentDirection = 'stopped';
         this.updateInterval = null;
         this.map = null;
         this.robotMarker = null;
-        this.currentLat = 40.7128; // Default to New York (mock location)
-        this.currentLon = -74.0060;
+        this.currentLat = 3.1209; // University of Malaya, KK9, Kuala Lumpur, Malaysia
+        this.currentLon = 101.6559;
         this.theme = localStorage.getItem('theme') || 'light';
         this.cameraController = null;
         this.joystickController = null;
@@ -136,8 +135,8 @@ class NautilusController {
         document.addEventListener('keydown', (e) => this.handleKeyDown(e));
         document.addEventListener('keyup', (e) => this.handleKeyUp(e));
     }    initializeMap() {
-        // Initialize the Leaflet map
-        this.map = L.map('map').setView([this.currentLat, this.currentLon], 18);
+        // Initialize the Leaflet map with University of Malaya, KK9 coordinates
+        this.map = L.map('map').setView([this.currentLat, this.currentLon], 17); // Higher zoom level for better detail
 
         // Add tile layer based on current theme
         const tileUrl = this.theme === 'dark' 
@@ -445,12 +444,10 @@ class NautilusController {
             console.error('Error updating status:', error);
             this.showConnectionError();
         }
-    }
-
-    updateStatusFromResponse(data) {
+    }    updateStatusFromResponse(data) {
         // Update position - Extract coordinates
-        const lat = data.state?.posY || data.posY || 0;
-        const lon = data.state?.posX || data.posX || 0;
+        const lat = data.state?.posY || data.posY || 3.1209; // Default to University of Malaya, KK9 coordinates
+        const lon = data.state?.posX || data.posX || 101.6559;
         
         document.getElementById('posX').textContent = lon.toFixed(6);
         document.getElementById('posY').textContent = lat.toFixed(6);
