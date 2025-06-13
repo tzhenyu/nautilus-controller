@@ -22,12 +22,8 @@ Nautilus Controller is a cutting-edge web-based control platform designed for Ra
 
 <div align="center">
 
-### 📸 Demo Screenshots
-
-**Fleet Management Dashboard**
 <img src="images/fleet-page.png" alt="Fleet Management Page" width="800" />
 
-**Individual Robot Controller**
 <img src="images/nautilus-controller.png" alt="Nautilus Controller Interface" width="800" />
 
 </div>
@@ -73,7 +69,7 @@ Nautilus Controller is a cutting-edge web-based control platform designed for Ra
 - **Object Detection**: Intelligent object recognition and tracking
 - **Toggle Controls**: Easy camera system management
 
-### 🔧 Hardware Control
+### 🔧 Hardware Control & Data Fusion
 
 - **Servo Motor Control**: Precise positioning (0° - 90°)
 - **Variable Speed Control**: Adjustable motor speed (0-100%)
