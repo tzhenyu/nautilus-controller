@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nautilus Fleet Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link href="/static/style.css" rel="stylesheet">
+    <link href="/static/fleet.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- Header with Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold ms-3" href="/fleet">
+                <img src="/images/nautilus2.png" alt="Nautilus" class="nautilus-logo me-2">Nautilus Fleet Management
+            </a>
+            <div class="d-flex align-items-center">
+                <!-- Theme Toggle -->
+                <button id="themeToggle" class="btn btn-outline-light btn-sm me-2" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <!-- Fullscreen Toggle -->
+                <button id="fullscreenBtn" class="btn btn-outline-light btn-sm" title="Toggle Fullscreen">
+                    <i class="fas fa-expand"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid flex-grow-1 py-3">
+        <!-- Fleet Overview Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-gradient-primary text-white border-0">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4 class="mb-0 fw-bold">
+                                <i class="fas fa-water me-2"></i>Nautilus Fleet Overview
+                            </h4>
+                            <div class="fleet-status">
+                                <span class="badge bg-success fs-6 me-2">
+                                    <i class="fas fa-robot me-1"></i>5 Active
+                                </span>
+                                <span class="badge bg-info fs-6">
+                                    <i class="fas fa-map-marker-alt me-1"></i>University of Malaya
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fleet Map -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light border-0">
+                        <h5 class="mb-0 fw-semibold">
+                            <i class="fas fa-map text-primary me-2"></i>Fleet Location Map
+                        </h5>
+                    </div>
+                    <div class="card-body p-3">
+                        <div id="fleetMap" class="fleet-map-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fleet Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light border-0">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="mb-0 fw-semibold">
+                                <i class="fas fa-list text-primary me-2"></i>Fleet Status Table
+                            </h5>
+                            <div class="fleet-controls d-flex gap-2">
+                                <button class="btn btn-success btn-sm rounded-pill">
+                                    <i class="fas fa-sync-alt me-1"></i>Refresh All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" class="text-center">
+                                            <i class="fas fa-robot me-1"></i>Robot ID
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-tag me-1"></i>Model
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-network-wired me-1"></i>IP Address
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-map-marker-alt me-1"></i>Position
+                                        </th>
+                                        <th scope="col" class="text-center">
+                                            <i class="fas fa-battery-three-quarters me-1"></i>Battery
+                                        </th>
+                                        <th scope="col" class="text-center">
+                                            <i class="fas fa-heartbeat me-1"></i>Status
+                                        </th>
+                                        <th scope="col" class="text-center">
+                                            <i class="fas fa-cogs me-1"></i>Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fleetTableBody">
+                                    <!-- Fleet data will be populated by JavaScript -->
+                                    <!-- Fallback data in case JavaScript fails -->
+                                    <tr style="display: none;" class="fallback-row">
+                                        <td class="text-center"><span class="fw-bold text-primary">NAUT-001</span></td>
+                                        <td><div class="nautilus-model"><i class="fas fa-water text-primary"></i> Nautilus Explorer Pro</div></td>
+                                        <td><span class="ip-address">192.168.1.101</span></td>
+                                        <td><div class="coordinates"><span class="lat">Lat: 3.1209</span><span class="lng">Lng: 101.6559</span></div></td>
+                                        <td class="text-center"><div class="battery-indicator"><span class="battery-level battery-high"><i class="fas fa-battery-three-quarters"></i> 87%</span></div></td>
+                                        <td class="text-center"><span class="status-indicator status-online"><i class="fas fa-circle-check"></i> online</span></td>
+                                        <td class="text-center"><div class="action-buttons"><button class="action-btn control-btn" onclick="window.location.href='/controller'"><i class="fas fa-gamepad"></i> Control</button></div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Immediate test script -->
+    <script>
+        console.log('Fleet page scripts loading...');
+        console.log('Bootstrap available:', typeof bootstrap !== 'undefined');
+        
+                 // Test if DOM elements are present
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded test');
+            console.log('Map container exists:', !!document.getElementById('fleetMap'));
+            console.log('Table body exists:', !!document.getElementById('fleetTableBody'));
+            console.log('Leaflet loading:', typeof L !== 'undefined');
+            
+            // Show fallback after 3 seconds if main script hasn't populated the table
+            setTimeout(function() {
+                const tableBody = document.getElementById('fleetTableBody');
+                if (tableBody && tableBody.children.length <= 1) { // Only has fallback row
+                    console.log('Main script failed, showing fallback...');
+                    const fallbackRow = tableBody.querySelector('.fallback-row');
+                    if (fallbackRow) {
+                        fallbackRow.style.display = '';
+                        
+                        // Also add a simple map fallback
+                        const mapContainer = document.getElementById('fleetMap');
+                        if (mapContainer && mapContainer.innerHTML.trim() === '') {
+                            mapContainer.innerHTML = `
+                                <div class="d-flex align-items-center justify-content-center h-100">
+                                    <div class="text-center text-muted">
+                                        <i class="fas fa-map fa-3x mb-3"></i>
+                                        <h6>Map Loading...</h6>
+                                        <p>JavaScript map initialization in progress</p>
+                                        <small>Check browser console for details</small>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+            }, 3000);
+        });
+    </script>
+    
+    <script src="/static/fleet.js"></script>
+    <script>
+        // Theme toggle functionality (shared with main controller)
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const themeIcon = themeToggle.querySelector('i');
+
+        // Load theme preference
+        const savedTheme = localStorage.getItem('nautilus-theme') || 'light';
+        body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('nautilus-theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            themeIcon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        // Fullscreen functionality
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const fullscreenIcon = fullscreenBtn.querySelector('i');
+
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                fullscreenIcon.className = 'fas fa-compress';
+            } else {
+                document.exitFullscreen();
+                fullscreenIcon.className = 'fas fa-expand';
+            }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            fullscreenIcon.className = document.fullscreenElement ? 'fas fa-compress' : 'fas fa-expand';
+        });
+    </script>
+</body>
+</html> 

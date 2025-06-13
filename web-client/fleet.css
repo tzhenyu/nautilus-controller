@@ -1,0 +1,496 @@
+/* Fleet Management Specific Styles */
+
+/* Fleet Map Container */
+.fleet-map-container {
+    height: 400px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    background-color: #f8f9fa;
+    position: relative;
+    min-height: 400px;
+}
+
+/* Fleet Status Badges */
+.fleet-status .badge {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.fleet-status .badge:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+/* Fleet Table Enhancements */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: var(--light-color);
+    border-bottom: 2px solid var(--border-color);
+    font-weight: 600;
+    padding: 1rem 0.75rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    vertical-align: middle;
+}
+
+[data-theme="dark"] .table thead th {
+    background-color: var(--light-bg);
+    color: var(--text-color);
+}
+
+.table tbody tr {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.table tbody td {
+    vertical-align: middle;
+    padding: 1rem 0.75rem;
+}
+
+.table tbody tr:hover {
+    background-color: var(--light-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .table tbody tr:hover {
+    background-color: var(--light-bg);
+}
+
+.table tbody tr.highlighted {
+    background-color: #fff3cd !important;
+    border-left: 4px solid #ffc107;
+    animation: highlightPulse 2s ease-in-out;
+}
+
+[data-theme="dark"] .table tbody tr.highlighted {
+    background-color: rgba(245, 158, 11, 0.1) !important;
+    border-left: 4px solid #f59e0b;
+    animation: highlightPulseDark 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+    0%, 100% { background-color: inherit; }
+    50% { background-color: #fff3cd; }
+}
+
+@keyframes highlightPulseDark {
+    0%, 100% { background-color: inherit; }
+    50% { background-color: rgba(245, 158, 11, 0.15); }
+}
+
+/* Nautilus Model Styling */
+.nautilus-model {
+    font-weight: 600;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nautilus-model i {
+    font-size: 1.1em;
+}
+
+/* IP Address Styling */
+.ip-address {
+    font-family: 'Courier New', monospace;
+    background-color: var(--light-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .ip-address {
+    background-color: rgba(71, 85, 105, 0.3);
+    color: #e2e8f0;
+    border-color: rgba(71, 85, 105, 0.5);
+}
+
+/* Position Coordinates */
+.coordinates {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85em;
+    color: var(--text-muted);
+}
+
+.coordinates .lat,
+.coordinates .lng {
+    display: block;
+    line-height: 1.2;
+}
+
+/* Battery Level Indicators */
+.battery-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.battery-level {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    font-size: 0.85em;
+}
+
+.battery-high {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+}
+
+.battery-medium {
+    background-color: #fff3cd;
+    color: #664d03;
+    border: 1px solid #ffecb5;
+}
+
+.battery-low {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c2c7;
+}
+
+[data-theme="dark"] .battery-high {
+    background-color: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+[data-theme="dark"] .battery-medium {
+    background-color: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.3);
+}
+
+[data-theme="dark"] .battery-low {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Status Indicators */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.85em;
+    transition: all 0.3s ease;
+}
+
+.status-online {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+}
+
+.status-idle {
+    background-color: #cce5f4;
+    color: #055160;
+    border: 1px solid #9eeaf9;
+}
+
+.status-maintenance {
+    background-color: #fff3cd;
+    color: #664d03;
+    border: 1px solid #ffecb5;
+}
+
+.status-offline {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c2c7;
+}
+
+[data-theme="dark"] .status-online {
+    background-color: rgba(34, 197, 94, 0.15);
+    color: #10b981;
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+[data-theme="dark"] .status-idle {
+    background-color: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+[data-theme="dark"] .status-maintenance {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+[data-theme="dark"] .status-offline {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.status-indicator::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: currentColor;
+    animation: statusPulse 2s infinite;
+}
+
+/* Action Buttons - Same Style as Status Badges */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-btn {
+    padding: 0.5rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.85em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: 1px solid;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 85px;
+    max-width: 85px;
+    height: 36px;
+    justify-content: center;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.action-btn:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-btn:active {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.1s ease;
+}
+
+.control-btn {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0a58ca;
+}
+
+.control-btn:hover {
+    background-color: #0b5ed7;
+    border-color: #0a53be;
+    color: white;
+}
+
+.info-btn {
+    background-color: #0dcaf0;
+    color: white;
+    border-color: #0aa2c0;
+}
+
+.info-btn:hover {
+    background-color: #0aa2c0;
+    border-color: #0891a3;
+    color: white;
+}
+
+/* Button Icons - Simple like Status Badges */
+.action-btn i {
+    font-size: 0.9em;
+}
+
+/* Focus States - Simple */
+.action-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+}
+
+.info-btn:focus {
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
+}
+
+/* Dark mode enhancements for action buttons */
+[data-theme="dark"] .control-btn {
+    background-color: #3b82f6;
+    border-color: #2563eb;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+[data-theme="dark"] .control-btn:hover {
+    background-color: #2563eb;
+    border-color: #1d4ed8;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+[data-theme="dark"] .info-btn {
+    background-color: #06b6d4;
+    border-color: #0891b2;
+    box-shadow: 0 2px 4px rgba(6, 182, 212, 0.2);
+}
+
+[data-theme="dark"] .info-btn:hover {
+    background-color: #0891b2;
+    border-color: #0e7490;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+}
+
+/* Fleet Map Markers */
+.nautilus-marker {
+    background: transparent !important;
+    border: none !important;
+}
+
+.nautilus-marker .marker-content {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #0d6efd;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.nautilus-marker .marker-content:hover,
+.nautilus-marker .marker-content.highlighted {
+    background-color: #dc3545;
+    transform: scale(1.3);
+    box-shadow: 0 4px 16px rgba(220, 53, 69, 0.5);
+    z-index: 1000;
+}
+
+.nautilus-marker .marker-content.highlighted {
+    animation: markerPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes markerPulse {
+    0%, 100% { transform: scale(1.3); }
+    50% { transform: scale(1.5); }
+}
+
+/* Fleet Controls */
+.fleet-controls .btn {
+    transition: all 0.3s ease;
+}
+
+.fleet-controls .btn:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .fleet-map-container {
+        height: 300px;
+    }
+    
+    .table-responsive {
+        border-radius: 0.5rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+    
+    .action-btn {
+        font-size: 0.8em;
+        padding: 0.4rem 0.6rem;
+        min-width: 75px;
+    }
+    
+    .fleet-status {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-end;
+    }
+    
+    .coordinates {
+        font-size: 0.75em;
+    }
+    
+    .table th, .table td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.85em;
+    }
+}
+
+@media (max-width: 576px) {
+    .fleet-map-container {
+        height: 250px;
+    }
+    
+    .table th:nth-child(3),
+    .table td:nth-child(3) {
+        display: none; /* Hide IP address on very small screens */
+    }
+    
+    .table th:nth-child(4),
+    .table td:nth-child(4) {
+        display: none; /* Hide position on very small screens */
+    }
+}
+
+/* Dark theme specific adjustments */
+[data-theme="dark"] .table {
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .table th {
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .table td {
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .table-light th {
+    background-color: var(--light-bg);
+    color: var(--text-color);
+}
+
+/* Loading states */
+.loading-row {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading-row td {
+    position: relative;
+}
+
+.loading-row td::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+[data-theme="dark"] .loading-row td::after {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+} 

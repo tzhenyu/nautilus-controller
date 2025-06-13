@@ -161,6 +161,16 @@ async def shutdown_event():
 
 @app.get("/")
 async def root(request: Request):
+    # Redirect to fleet management page as the default landing page
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/fleet", status_code=302)
+
+@app.get("/fleet")
+async def fleet_management(request: Request):
+    return templates.TemplateResponse("fleet.html", {"request": request})
+
+@app.get("/controller")
+async def controller(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.post("/api/move")

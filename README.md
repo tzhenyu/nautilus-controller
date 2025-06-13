@@ -20,16 +20,28 @@
 
 Nautilus Controller is a cutting-edge web-based control platform designed for Raspberry Pi robotics applications. It provides an intuitive, responsive interface for real-time robot control with advanced features including AI-powered detection, depth perception, and comprehensive telemetry monitoring.
 
-### 🎯 Project Goals
+<div align="center">
 
-- **Accessibility**: Mobile-first design with touch-optimized controls
-- **Real-time Control**: Low-latency command execution and status updates
-- **Modularity**: Extensible architecture for custom hardware integration
-- **Intelligence**: AI-powered features for autonomous operation capabilities
+### 📸 Demo Screenshots
 
----
+**Fleet Management Dashboard**
+<img src="images/fleet-page.png" alt="Fleet Management Page" width="800" />
+
+**Individual Robot Controller**
+<img src="images/nautilus-controller.png" alt="Nautilus Controller Interface" width="800" />
+
+</div>
 
 ## ✨ Key Features
+
+### 🏢 Fleet Management System
+
+- **Multi-Robot Dashboard**: Monitor and control multiple Nautilus units simultaneously
+- **Real-time Status Monitoring**: Live battery levels, positions, and operational status
+- **Interactive Map**: Geographic visualization of robot locations with hover interactions
+- **Centralized Control**: Access individual robot controllers from fleet overview
+- **Status Indicators**: Color-coded status badges for quick fleet assessment
+- **Responsive Design**: Mobile-optimized fleet management interface
 
 ### 🎮 Advanced Movement Controls
 
@@ -78,7 +90,7 @@ Nautilus Controller is a cutting-edge web-based control platform designed for Ra
 ### 🎨 User Experience
 
 - **Responsive Design**: Optimized for mobile, tablet, and desktop
-- **Dark/Light Themes**: Automatic and manual theme switching
+- **Dark/Light Themes**: Enhanced dark mode with vibrant colors
 - **Fullscreen Mode**: Immersive control experience
 - **Touch Controls**: Full touch support for mobile platforms
 - **Real-time Updates**: 1-second status refresh intervals
@@ -160,14 +172,12 @@ flowchart TD
 
 **Windows:**
 ```bash
-cd web-client
-python -m uvicorn backend:app --host 0.0.0.0 --port 8000 --reload
+cd web-client; python -m uvicorn backend:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 **Alternative Windows:**
 ```bash
-cd web-client
-python backend.py
+cd web-client; python backend.py
 ```
 
 ### Accessing the Interface
