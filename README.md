@@ -122,6 +122,14 @@ flowchart TD
 ```
 ---
 
+## 🌐 Mesh Network Introduction
+
+The Nautilus system leverages a mesh network architecture, enabling multiple Nautilus units to communicate with each other through their built-in WiFi adapters. Each Nautilus acts as a node within this network, facilitating direct peer-to-peer connections. This setup allows for reliable communication over distances ranging from 50 to 100 meters, depending on environmental conditions.
+By deploying multiple Nautilus units, we can create a robust and scalable network that enhances coordination and data sharing among the units. This decentralized approach not only improves the reliability of the communication but also allows for dynamic adjustments as nodes can forward data on behalf of others, ensuring continuous connectivity even if some nodes go offline.
+For more details on the mesh network implementation, please refer to the [nautilus-mesh-network GitHub repository](https://github.com/tzhenyu/nautilus-mesh-network).
+
+---
+
 ## 🔧 Installation
 
 ### Quick Start
